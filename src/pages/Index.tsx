@@ -16,17 +16,21 @@ const Index = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Department Overview - Full Width */}
+          <div className="mb-6">
+            <DepartmentTable />
+          </div>
+
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Left Column */}
             <div className="space-y-6">
               <RegistrationSection />
-              <UploadSection />
             </div>
             
             {/* Right Column */}
             <div className="space-y-6">
-              <DepartmentTable />
+              <UploadSection />
             </div>
           </div>
           
