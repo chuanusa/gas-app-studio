@@ -3,7 +3,7 @@ import { DepartmentCard } from '@/components/DepartmentCard';
 import { StatsOverview } from '@/components/StatsOverview';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Printer, Lock, RefreshCw, LayoutGrid, List } from 'lucide-react';
+import { Printer, Lock, RefreshCw, LayoutGrid, List, Check } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -31,6 +31,7 @@ const completedDepartments = departmentData.filter(d => d.current === d.total).l
 
 export function DepartmentTable() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedDept, setSelectedDept] = useState<string | null>(null);
 
   return (
     <StepCard step={2} title="主管確認與下載">
@@ -115,32 +116,50 @@ export function DepartmentTable() {
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-2">
-        <Select>
-          <SelectTrigger className="sm:w-48 h-9 bg-background text-sm">
-            <SelectValue placeholder="選擇部門以列印..." />
-          </SelectTrigger>
-          <SelectContent className="bg-popover border border-border shadow-lg z-50">
-            {departments.map((dept) => (
-              <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <h3 className="text-xs font-medium text-muted-foreground mb-2">快速選取部門</h3>
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {departmentData.map((dept) => {
+          const isSelected = selectedDept === dept.name;
+          const isComplete = dept.current === dept.total;
+          return (
+            <button
+              key={dept.name}
+              onClick={() => setSelectedDept(isSelected ? null : dept.name)}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
+                isSelected
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                  : isComplete
+                    ? "bg-[hsl(var(--success))]/10 text-[hsl(var(--success))] border-[hsl(var(--success))]/30 hover:border-[hsl(var(--success))]/60"
+                    : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-primary/5"
+              )}
+            >
+              {isSelected && <Check className="w-3 h-3" />}
+              {dept.name}
+              <span className={cn(
+                "text-[10px] px-1.5 py-0.5 rounded-full",
+                isSelected ? "bg-primary-foreground/20" : "bg-muted"
+              )}>
+                {dept.current}/{dept.total}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
-        <div className="flex gap-1.5 flex-wrap">
-          <Button size="sm" className="btn-gradient-primary gap-1.5 h-9 text-xs">
-            <Printer className="w-3.5 h-3.5" />
-            列印簽核表
-          </Button>
-          <Button size="sm" className="btn-gradient-accent gap-1.5 h-9 text-xs">
-            <Lock className="w-3.5 h-3.5" />
-            鎖定部門
-          </Button>
-          <Button size="sm" variant="outline" className="gap-1.5 h-9 text-xs">
-            <RefreshCw className="w-3.5 h-3.5" />
-            重整
-          </Button>
-        </div>
+      <div className="flex gap-1.5 flex-wrap">
+        <Button size="sm" className="btn-gradient-primary gap-1.5 h-9 text-xs" disabled={!selectedDept}>
+          <Printer className="w-3.5 h-3.5" />
+          列印簽核表{selectedDept ? `（${selectedDept}）` : ''}
+        </Button>
+        <Button size="sm" className="btn-gradient-accent gap-1.5 h-9 text-xs" disabled={!selectedDept}>
+          <Lock className="w-3.5 h-3.5" />
+          鎖定部門
+        </Button>
+        <Button size="sm" variant="outline" className="gap-1.5 h-9 text-xs">
+          <RefreshCw className="w-3.5 h-3.5" />
+          重整
+        </Button>
       </div>
     </StepCard>
   );
