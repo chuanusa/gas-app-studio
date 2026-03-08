@@ -43,6 +43,7 @@ const Index = () => {
           )}
           {role === 'manager' && (
             <div className="space-y-4">
+              <DeadlineNotification deadline={DEADLINE} unregisteredByDept={unregisteredByDept} />
               <div className="grid gap-4 lg:grid-cols-[1fr_240px]">
                 <DepartmentTable />
                 <CountdownTimer deadline={DEADLINE} />
