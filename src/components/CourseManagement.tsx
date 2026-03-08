@@ -102,11 +102,13 @@ export function CourseManagement() {
       </p>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2 mb-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-3">
         {[
           { label: '課程總數', value: courses.length, icon: BookOpen, color: 'text-primary' },
           { label: '啟用中', value: courses.filter(c => c.enabled).length, icon: Calendar, color: 'text-[hsl(var(--success))]' },
           { label: '已停用', value: courses.filter(c => !c.enabled).length, icon: Clock, color: 'text-destructive' },
+          { label: '已報名', value: courses.reduce((a, c) => a + c.enrolled, 0), icon: Users, color: 'text-accent' },
+          { label: '額滿課程', value: courses.filter(c => c.enrolled >= c.capacity).length, icon: MapPin, color: 'text-[hsl(var(--warning))]' },
         ].map(s => (
           <div key={s.label} className="rounded-lg border border-border bg-card p-2.5 flex items-center gap-2.5">
             <div className="p-1.5 rounded-md bg-muted/50">
@@ -159,7 +161,7 @@ export function CourseManagement() {
                 <th className="hidden md:table-cell">講師</th>
                 <th className="hidden lg:table-cell">日期</th>
                 <th className="hidden lg:table-cell">地點</th>
-                <th className="hidden sm:table-cell">人數上限</th>
+                <th className="min-w-[130px]">報名進度</th>
                 <th>狀態</th>
                 <th className="text-right">操作</th>
               </tr>
@@ -182,7 +184,33 @@ export function CourseManagement() {
                   <td className="hidden md:table-cell text-sm text-muted-foreground">{course.instructor}</td>
                   <td className="hidden lg:table-cell text-xs text-muted-foreground">{course.date}</td>
                   <td className="hidden lg:table-cell text-xs text-muted-foreground">{course.location}</td>
-                  <td className="hidden sm:table-cell text-sm">{course.capacity}</td>
+                  <td>
+                    {(() => {
+                      const pct = Math.round((course.enrolled / course.capacity) * 100);
+                      const isFull = course.enrolled >= course.capacity;
+                      return (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[10px]">
+                            <span className={cn("font-semibold", isFull ? "text-[hsl(var(--warning))]" : "text-foreground")}>
+                              {course.enrolled}/{course.capacity}
+                            </span>
+                            <span className="text-muted-foreground">
+                              {isFull ? '額滿' : `剩 ${course.capacity - course.enrolled}`}
+                            </span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className={cn(
+                                "h-full rounded-full transition-all",
+                                isFull ? "bg-[hsl(var(--warning))]" : pct >= 80 ? "bg-accent" : "bg-primary"
+                              )}
+                              style={{ width: `${Math.min(pct, 100)}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </td>
                   <td>
                     <span className={cn(
                       "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium",
