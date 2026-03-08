@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { BookOpen, Plus, Edit2, Trash2, Search, Clock, MapPin, Users, Calendar } from 'lucide-react';
+import { BookOpen, Plus, Edit2, Trash2, Search, Clock, MapPin, Users, Calendar, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { EnrollmentTrendChart } from '@/components/EnrollmentTrendChart';
