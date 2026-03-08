@@ -52,6 +52,7 @@ export function CourseManagement() {
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [form, setForm] = useState<Omit<Course, 'id'>>(emptyCourse);
   const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([]);
+  const [alertThreshold, setAlertThreshold] = useState(90);
 
   const filtered = courses.filter(c => {
     const matchSearch = c.name.includes(search) || c.instructor.includes(search);
@@ -130,7 +131,8 @@ export function CourseManagement() {
       {/* Almost Full Alerts */}
       <CourseAlmostFullAlert
         courses={courses}
-        threshold={90}
+        threshold={alertThreshold}
+        onThresholdChange={setAlertThreshold}
         dismissedIds={dismissedAlerts}
         onDismiss={(id) => setDismissedAlerts(prev => [...prev, id])}
       />
