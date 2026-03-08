@@ -36,26 +36,26 @@ export function CountdownTimer({ deadline }: CountdownTimerProps) {
 
   return (
     <div className={cn(
-      "card-elevated p-5 opacity-0 animate-slide-up",
+      "card-elevated p-4 opacity-0 animate-slide-up",
       time.expired && "ring-2 ring-destructive/30 bg-destructive/5",
       isUrgent && !time.expired && "ring-2 ring-warning/30 bg-warning/5"
     )}>
       <div className="flex items-center gap-2 mb-3">
         {isUrgent || time.expired ? (
-          <AlertTriangle className={cn("w-5 h-5", time.expired ? "text-destructive" : "text-warning")} />
+          <AlertTriangle className={cn("w-4 h-4", time.expired ? "text-destructive" : "text-warning")} />
         ) : (
-          <Clock className="w-5 h-5 text-primary" />
+          <Clock className="w-4 h-4 text-primary" />
         )}
-        <h3 className="font-semibold text-foreground">
+        <h3 className="font-semibold text-sm text-foreground">
           {time.expired ? '報名已截止' : '報名截止倒數'}
         </h3>
       </div>
 
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-1.5">
         {units.map((u) => (
           <div key={u.label} className="flex flex-col items-center">
             <div className={cn(
-              "w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold",
+              "w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold",
               time.expired
                 ? "bg-destructive/10 text-destructive"
                 : isUrgent
@@ -64,14 +64,14 @@ export function CountdownTimer({ deadline }: CountdownTimerProps) {
             )}>
               {String(u.value).padStart(2, '0')}
             </div>
-            <span className="text-xs text-muted-foreground mt-1">{u.label}</span>
+            <span className="text-[10px] text-muted-foreground mt-0.5">{u.label}</span>
           </div>
         ))}
       </div>
 
       {!time.expired && (
-        <p className="text-xs text-muted-foreground text-center mt-3">
-          截止日期：{deadline.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
+        <p className="text-[11px] text-muted-foreground text-center mt-2">
+          截止：{deadline.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
       )}
     </div>

@@ -19,7 +19,7 @@ export function StatsOverview({
 
   const stats = [
     {
-      label: '總報名人數',
+      label: '已報名',
       value: registeredPeople,
       subValue: `/ ${totalPeople}`,
       icon: CheckCircle2,
@@ -27,7 +27,7 @@ export function StatsOverview({
       bgColor: 'bg-success/10',
     },
     {
-      label: '待報名人數',
+      label: '待報名',
       value: pendingPeople,
       subValue: '人',
       icon: Clock,
@@ -35,7 +35,7 @@ export function StatsOverview({
       bgColor: pendingPeople > 0 ? 'bg-warning/10' : 'bg-success/10',
     },
     {
-      label: '已完成部門',
+      label: '完成部門',
       value: completedDepartments,
       subValue: `/ ${totalDepartments}`,
       icon: Building2,
@@ -43,7 +43,7 @@ export function StatsOverview({
       bgColor: 'bg-primary/10',
     },
     {
-      label: '整體進度',
+      label: '進度',
       value: `${overallProgress.toFixed(0)}%`,
       subValue: '',
       icon: Users,
@@ -53,22 +53,22 @@ export function StatsOverview({
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-4 gap-3 mb-5">
       {stats.map((stat, index) => (
         <div 
           key={stat.label}
-          className="card-elevated p-4 opacity-0 animate-slide-up"
+          className="rounded-xl border border-border/50 bg-card p-3 opacity-0 animate-slide-up"
           style={{ animationDelay: `${0.1 * index}s` }}
         >
-          <div className="flex items-center gap-3">
-            <div className={cn("p-2.5 rounded-xl", stat.bgColor)}>
-              <stat.icon className={cn("w-5 h-5", stat.color)} />
+          <div className="flex items-center gap-2.5">
+            <div className={cn("p-2 rounded-lg", stat.bgColor)}>
+              <stat.icon className={cn("w-4 h-4", stat.color)} />
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{stat.label}</p>
-              <p className="text-xl font-bold text-foreground">
+            <div className="min-w-0">
+              <p className="text-[11px] text-muted-foreground truncate">{stat.label}</p>
+              <p className="text-lg font-bold text-foreground leading-tight">
                 {stat.value}
-                <span className="text-sm font-normal text-muted-foreground ml-1">
+                <span className="text-xs font-normal text-muted-foreground ml-0.5">
                   {stat.subValue}
                 </span>
               </p>

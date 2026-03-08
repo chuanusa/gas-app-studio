@@ -25,8 +25,6 @@ const departmentData = [
 ];
 
 const departments = departmentData.map(d => d.name);
-
-// Calculate stats
 const totalPeople = departmentData.reduce((acc, d) => acc + d.total, 0);
 const registeredPeople = departmentData.reduce((acc, d) => acc + d.current, 0);
 const completedDepartments = departmentData.filter(d => d.current === d.total).length;
@@ -36,11 +34,10 @@ export function DepartmentTable() {
 
   return (
     <StepCard step={2} title="主管確認與下載">
-      <p className="text-muted-foreground mb-6">
-        請各部門主管或經辦確認部門同仁填報狀態。確認無誤後，可「鎖定」並「列印」簽核總表。
+      <p className="text-sm text-muted-foreground mb-4">
+        請各部門主管確認同仁填報狀態，確認後可「鎖定」並「列印」簽核總表。
       </p>
 
-      {/* Stats Overview */}
       <StatsOverview 
         totalDepartments={departmentData.length}
         completedDepartments={completedDepartments}
@@ -48,54 +45,48 @@ export function DepartmentTable() {
         registeredPeople={registeredPeople}
       />
 
-      {/* View Toggle */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-medium text-foreground">各部門報名狀態</h3>
-        <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-medium text-foreground">各部門報名狀態</h3>
+        <div className="flex items-center gap-0.5 p-0.5 bg-muted/50 rounded-lg">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              "p-2 rounded-md transition-colors",
+              "p-1.5 rounded-md transition-colors",
               viewMode === 'grid' 
                 ? "bg-background shadow-sm text-foreground" 
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            <LayoutGrid className="w-4 h-4" />
+            <LayoutGrid className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              "p-2 rounded-md transition-colors",
+              "p-1.5 rounded-md transition-colors",
               viewMode === 'list' 
                 ? "bg-background shadow-sm text-foreground" 
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
-            <List className="w-4 h-4" />
+            <List className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Department Cards / Table */}
       {viewMode === 'grid' ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-5">
           {departmentData.map((dept, index) => (
-            <DepartmentCard 
-              key={dept.name}
-              {...dept}
-              index={index}
-            />
+            <DepartmentCard key={dept.name} {...dept} index={index} />
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-border overflow-hidden mb-6">
+        <div className="rounded-xl border border-border overflow-hidden mb-5">
           <div className="overflow-x-auto">
             <table className="table-modern">
               <thead>
                 <tr>
                   <th>部門</th>
-                  <th className="min-w-[180px]">填報進度</th>
+                  <th className="min-w-[160px]">填報進度</th>
                   <th>狀態</th>
                 </tr>
               </thead>
@@ -106,16 +97,11 @@ export function DepartmentTable() {
                     <tr 
                       key={dept.name}
                       className="opacity-0 animate-fade-in"
-                      style={{ animationDelay: `${0.3 + index * 0.05}s` }}
+                      style={{ animationDelay: `${0.3 + index * 0.04}s` }}
                     >
                       <td className="font-medium text-foreground">{dept.name}</td>
                       <td>
-                        <ProgressBar 
-                          progress={progress} 
-                          current={dept.current} 
-                          total={dept.total}
-                          size="sm"
-                        />
+                        <ProgressBar progress={progress} current={dept.current} total={dept.total} size="sm" />
                       </td>
                       <td>
                         <StatusBadge isLocked={dept.isLocked} />
@@ -129,33 +115,30 @@ export function DepartmentTable() {
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Select>
-          <SelectTrigger className="sm:w-64 h-11 bg-background">
+          <SelectTrigger className="sm:w-56 h-10 bg-background text-sm">
             <SelectValue placeholder="選擇部門以列印..." />
           </SelectTrigger>
           <SelectContent className="bg-popover border border-border shadow-lg z-50">
             {departments.map((dept) => (
-              <SelectItem key={dept} value={dept}>
-                {dept}
-              </SelectItem>
+              <SelectItem key={dept} value={dept}>{dept}</SelectItem>
             ))}
           </SelectContent>
         </Select>
 
         <div className="flex gap-2 flex-wrap">
-          <Button className="btn-gradient-primary gap-2">
-            <Printer className="w-4 h-4" />
+          <Button size="sm" className="btn-gradient-primary gap-1.5">
+            <Printer className="w-3.5 h-3.5" />
             列印簽核表
           </Button>
-          <Button className="btn-gradient-accent gap-2">
-            <Lock className="w-4 h-4" />
-            鎖定部門提交
+          <Button size="sm" className="btn-gradient-accent gap-1.5">
+            <Lock className="w-3.5 h-3.5" />
+            鎖定部門
           </Button>
-          <Button variant="outline" className="gap-2">
-            <RefreshCw className="w-4 h-4" />
-            重整列表
+          <Button size="sm" variant="outline" className="gap-1.5">
+            <RefreshCw className="w-3.5 h-3.5" />
+            重整
           </Button>
         </div>
       </div>

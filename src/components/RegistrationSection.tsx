@@ -11,37 +11,35 @@ const departments = [
 export function RegistrationSection() {
   return (
     <StepCard step={1} title="登錄參加課程（個人報名）">
-      <p className="text-muted-foreground mb-6">
-        請依序選擇您的「部門」與「姓名」，系統將自動列出可報名的課程。
+      <p className="text-sm text-muted-foreground mb-4">
+        請選擇「部門」與「姓名」，系統將自動列出可報名的課程。
       </p>
       
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label className="flex items-center gap-2 text-sm font-medium">
-            <Building2 className="w-4 h-4 text-primary" />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-sm font-medium">
+            <Building2 className="w-3.5 h-3.5 text-primary" />
             部門
           </Label>
           <Select>
-            <SelectTrigger className="h-11 bg-background border-border hover:border-primary/50 transition-colors">
+            <SelectTrigger className="h-10 bg-background border-border hover:border-primary/50 transition-colors">
               <SelectValue placeholder="請選擇部門..." />
             </SelectTrigger>
             <SelectContent>
               {departments.map((dept) => (
-                <SelectItem key={dept} value={dept}>
-                  {dept}
-                </SelectItem>
+                <SelectItem key={dept} value={dept}>{dept}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label className="flex items-center gap-2 text-sm font-medium">
-            <User className="w-4 h-4 text-primary" />
+        <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-sm font-medium">
+            <User className="w-3.5 h-3.5 text-primary" />
             姓名
           </Label>
           <Select>
-            <SelectTrigger className="h-11 bg-background border-border hover:border-primary/50 transition-colors">
+            <SelectTrigger className="h-10 bg-background border-border hover:border-primary/50 transition-colors">
               <SelectValue placeholder="請選擇姓名..." />
             </SelectTrigger>
             <SelectContent>

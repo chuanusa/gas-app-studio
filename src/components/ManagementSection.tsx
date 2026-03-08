@@ -11,55 +11,49 @@ const departments = [
 export function ManagementSection() {
   return (
     <StepCard step={4} title="部門管理控制台">
-      <p className="text-muted-foreground mb-6">
-        卡片式管理介面：可依「人員」或「課程」視角進行批次管理。
+      <p className="text-sm text-muted-foreground mb-4">
+        依「人員」或「課程」視角進行批次管理。
       </p>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         <Select>
-          <SelectTrigger className="w-full sm:w-64 h-11 bg-background">
+          <SelectTrigger className="w-full sm:w-56 h-10 bg-background text-sm">
             <SelectValue placeholder="請選擇部門..." />
           </SelectTrigger>
           <SelectContent>
             {departments.map((dept) => (
-              <SelectItem key={dept} value={dept}>
-                {dept}
-              </SelectItem>
+              <SelectItem key={dept} value={dept}>{dept}</SelectItem>
             ))}
           </SelectContent>
         </Select>
 
         <Tabs defaultValue="personnel" className="w-full">
-          <TabsList className="grid w-full sm:w-auto sm:inline-grid grid-cols-2 h-11 p-1 bg-muted/50">
-            <TabsTrigger value="personnel" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Users className="w-4 h-4" />
+          <TabsList className="grid w-full sm:w-auto sm:inline-grid grid-cols-2 h-9 p-0.5 bg-muted/50">
+            <TabsTrigger value="personnel" className="gap-1.5 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Users className="w-3.5 h-3.5" />
               人員視角
             </TabsTrigger>
-            <TabsTrigger value="course" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <BookOpen className="w-4 h-4" />
+            <TabsTrigger value="course" className="gap-1.5 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <BookOpen className="w-3.5 h-3.5" />
               課程視角
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="personnel" className="mt-5">
-            <div className="rounded-xl border border-dashed border-border bg-muted/30 p-12 text-center">
-              <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                <LayoutGrid className="w-8 h-8 text-primary" />
+          <TabsContent value="personnel" className="mt-4">
+            <div className="rounded-xl border border-dashed border-border bg-muted/30 p-10 text-center">
+              <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                <LayoutGrid className="w-6 h-6 text-primary" />
               </div>
-              <p className="text-muted-foreground">
-                請先選擇部門以顯示人員管理卡片
-              </p>
+              <p className="text-sm text-muted-foreground">請先選擇部門以顯示人員管理卡片</p>
             </div>
           </TabsContent>
 
-          <TabsContent value="course" className="mt-5">
-            <div className="rounded-xl border border-dashed border-border bg-muted/30 p-12 text-center">
-              <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                <BookOpen className="w-8 h-8 text-primary" />
+          <TabsContent value="course" className="mt-4">
+            <div className="rounded-xl border border-dashed border-border bg-muted/30 p-10 text-center">
+              <div className="mx-auto w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                <BookOpen className="w-6 h-6 text-primary" />
               </div>
-              <p className="text-muted-foreground">
-                請先選擇部門以顯示課程管理卡片
-              </p>
+              <p className="text-sm text-muted-foreground">請先選擇部門以顯示課程管理卡片</p>
             </div>
           </TabsContent>
         </Tabs>

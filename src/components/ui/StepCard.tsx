@@ -12,20 +12,18 @@ export function StepCard({ step, title, children, className }: StepCardProps) {
   return (
     <div 
       className={cn(
-        "card-elevated p-6 opacity-0 animate-slide-up",
+        "card-elevated p-5 opacity-0 animate-slide-up",
         className
       )}
-      style={{ animationDelay: `${step * 0.1}s` }}
+      style={{ animationDelay: `${step * 0.08}s` }}
     >
-      <div className="flex items-start gap-4 mb-5">
-        <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground font-bold text-lg shadow-md">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground font-bold text-sm shadow-sm">
           {step}
         </div>
-        <h2 className="text-xl font-semibold text-foreground pt-1.5">{title}</h2>
+        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
       </div>
-      <div className="pl-14">
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
