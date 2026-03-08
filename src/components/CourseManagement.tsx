@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { BookOpen, Plus, Edit2, Trash2, Search, Clock, MapPin, Users, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import { EnrollmentTrendChart } from '@/components/EnrollmentTrendChart';
 
 export interface Course {
   id: string;
@@ -246,6 +247,11 @@ export function CourseManagement() {
         </div>
       </div>
       <p className="text-[11px] text-muted-foreground mt-2">共 {filtered.length} 筆課程（模擬資料）</p>
+
+      {/* Enrollment Trend Chart */}
+      <div className="mt-4">
+        <EnrollmentTrendChart courses={courses} />
+      </div>
 
       {/* Create / Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
