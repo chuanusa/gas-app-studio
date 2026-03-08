@@ -38,7 +38,7 @@ const initialCourses: Course[] = [
 
 const emptyCourse: Omit<Course, 'id'> = {
   name: '', category: '一般安全', hours: 3, instructor: '', date: '',
-  location: '', capacity: 50, description: '', enabled: true,
+  location: '', capacity: 50, enrolled: 0, description: '', enabled: true,
 };
 
 export function CourseManagement() {
@@ -65,7 +65,7 @@ export function CourseManagement() {
 
   const openEdit = (course: Course) => {
     setEditingCourse(course);
-    setForm({ name: course.name, category: course.category, hours: course.hours, instructor: course.instructor, date: course.date, location: course.location, capacity: course.capacity, description: course.description, enabled: course.enabled });
+    setForm({ name: course.name, category: course.category, hours: course.hours, instructor: course.instructor, date: course.date, location: course.location, capacity: course.capacity, enrolled: course.enrolled, description: course.description, enabled: course.enabled });
     setDialogOpen(true);
   };
 
