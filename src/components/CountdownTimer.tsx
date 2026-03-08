@@ -36,7 +36,7 @@ export function CountdownTimer({ deadline }: CountdownTimerProps) {
 
   return (
     <div className={cn(
-      "card-elevated p-4 opacity-0 animate-slide-up",
+      "card-elevated p-4 h-fit lg:sticky lg:top-20 opacity-0 animate-slide-up",
       time.expired && "ring-2 ring-destructive/30 bg-destructive/5",
       isUrgent && !time.expired && "ring-2 ring-warning/30 bg-warning/5"
     )}>
@@ -51,11 +51,11 @@ export function CountdownTimer({ deadline }: CountdownTimerProps) {
         </h3>
       </div>
 
-      <div className="flex items-center justify-center gap-1.5">
+      <div className="grid grid-cols-4 gap-1.5">
         {units.map((u) => (
           <div key={u.label} className="flex flex-col items-center">
             <div className={cn(
-              "w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold",
+              "w-full aspect-square rounded-lg flex items-center justify-center text-lg font-bold",
               time.expired
                 ? "bg-destructive/10 text-destructive"
                 : isUrgent
@@ -64,13 +64,13 @@ export function CountdownTimer({ deadline }: CountdownTimerProps) {
             )}>
               {String(u.value).padStart(2, '0')}
             </div>
-            <span className="text-[10px] text-muted-foreground mt-0.5">{u.label}</span>
+            <span className="text-[10px] text-muted-foreground mt-1">{u.label}</span>
           </div>
         ))}
       </div>
 
       {!time.expired && (
-        <p className="text-[11px] text-muted-foreground text-center mt-2">
+        <p className="text-[11px] text-muted-foreground text-center mt-3 pt-3 border-t border-border/50">
           截止：{deadline.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
       )}

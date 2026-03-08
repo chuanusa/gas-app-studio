@@ -53,22 +53,22 @@ export function StatsOverview({
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-3 mb-5">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
       {stats.map((stat, index) => (
         <div 
           key={stat.label}
-          className="rounded-xl border border-border/50 bg-card p-3 opacity-0 animate-slide-up"
-          style={{ animationDelay: `${0.1 * index}s` }}
+          className="rounded-lg border border-border/50 bg-card px-3 py-2.5 opacity-0 animate-slide-up"
+          style={{ animationDelay: `${0.08 * index}s` }}
         >
-          <div className="flex items-center gap-2.5">
-            <div className={cn("p-2 rounded-lg", stat.bgColor)}>
-              <stat.icon className={cn("w-4 h-4", stat.color)} />
+          <div className="flex items-center gap-2">
+            <div className={cn("p-1.5 rounded-md", stat.bgColor)}>
+              <stat.icon className={cn("w-3.5 h-3.5", stat.color)} />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] text-muted-foreground truncate">{stat.label}</p>
-              <p className="text-lg font-bold text-foreground leading-tight">
+              <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+              <p className="text-base font-bold text-foreground leading-tight">
                 {stat.value}
-                <span className="text-xs font-normal text-muted-foreground ml-0.5">
+                <span className="text-[11px] font-normal text-muted-foreground ml-0.5">
                   {stat.subValue}
                 </span>
               </p>
