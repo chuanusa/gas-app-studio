@@ -23,15 +23,15 @@ const Index = () => {
         <Header />
         
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-          {role === 'employee' ? (
+          {role === 'employee' && (
             <>
               <CountdownTimer deadline={DEADLINE} />
               <div className="grid gap-5 lg:grid-cols-2 mt-5">
                 <RegistrationSection />
-                <UploadSection />
               </div>
             </>
-          ) : (
+          )}
+          {role === 'manager' && (
             <>
               <div className="grid gap-5 lg:grid-cols-[1fr_260px]">
                 <DepartmentTable />
@@ -39,6 +39,14 @@ const Index = () => {
               </div>
               <div className="mt-5">
                 <ManagementSection />
+              </div>
+            </>
+          )}
+          {role === 'upload' && (
+            <>
+              <CountdownTimer deadline={DEADLINE} />
+              <div className="grid gap-5 mt-5">
+                <UploadSection />
               </div>
             </>
           )}
