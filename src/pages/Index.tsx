@@ -21,9 +21,10 @@ const Index = () => {
         <Header />
         
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          {/* Department Overview - Full Width */}
-          <div className="mb-6">
+          {/* Countdown + Department Overview */}
+          <div className="grid gap-6 lg:grid-cols-[1fr_280px] mb-6">
             <DepartmentTable />
+            <CountdownTimer deadline={DEADLINE} />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
