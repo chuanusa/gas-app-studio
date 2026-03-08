@@ -96,6 +96,29 @@ export function CourseManagement() {
     toast({ title: course.enabled ? '課程已停用' : '課程已啟用', description: `「${course.name}」狀態已變更。` });
   };
 
+  const exportData = (format: 'csv' | 'excel') => {
+    const headers = ['課程名稱', '類別', '時數', '講師', '日期', '地點', '人數上限', '已報名', '剩餘名額', '狀態'];
+    const rows = filtered.map(c => [
+      c.name, c.category, c.hours, c.instructor, c.date, c.location,
+      c.capacity, c.enrolled, c.capacity - c.enrolled, c.enabled ? '啟用' : '停用',
+    ]);
+
+    const BOM = '\uFEFF';
+    const separator = format === 'csv' ? ',' : '\t';
+    const ext = format === 'csv' ? 'csv' : 'xls';
+    const mime = format === 'csv' ? 'text/csv;charset=utf-8;' : 'application/vnd.ms-excel;charset=utf-8;';
+
+    const content = BOM + [headers.join(separator), ...rows.map(r => r.join(separator))].join('\n');
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `課程報名資料_${new Date().toISOString().slice(0, 10)}.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ title: '匯出成功', description: `已匯出 ${filtered.length} 筆課程資料為 ${format.toUpperCase()} 檔案。` });
+  };
+
   return (
     <StepCard step={2} title="課程種類管理">
       <p className="text-xs text-muted-foreground mb-3">
