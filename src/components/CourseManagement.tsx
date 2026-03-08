@@ -20,6 +20,7 @@ export interface Course {
   date: string;
   location: string;
   capacity: number;
+  enrolled: number;
   description: string;
   enabled: boolean;
 }
