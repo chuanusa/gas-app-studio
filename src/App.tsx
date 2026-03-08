@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { RoleProvider } from "@/contexts/RoleContext";
+import { ThemeColorProvider } from "@/contexts/ThemeColorContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -14,6 +15,7 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <ThemeColorProvider>
         <RoleProvider>
           <Toaster />
           <Sonner />
@@ -24,6 +26,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </RoleProvider>
+        </ThemeColorProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
