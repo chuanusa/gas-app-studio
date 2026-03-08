@@ -1,5 +1,6 @@
 import { GraduationCap, Shield } from 'lucide-react';
 import { RoleSwitcher } from '@/components/RoleSwitcher';
+import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { useRole } from '@/contexts/RoleContext';
 
 export function Header() {
@@ -27,8 +28,10 @@ export function Header() {
         </p>
         
         {/* Role Switcher */}
-        <div className="flex items-center justify-center mt-6 opacity-0 animate-fade-in" style={{ animationDelay: '0.25s' }}>
+        <div className="flex items-center justify-center gap-4 mt-6 opacity-0 animate-fade-in" style={{ animationDelay: '0.25s' }}>
           <RoleSwitcher />
+          <div className="w-px h-6 bg-border" />
+          <ThemeSwitcher />
         </div>
 
         <div className="flex items-center justify-center gap-6 mt-4 opacity-0 animate-fade-in" style={{ animationDelay: '0.3s' }}>
