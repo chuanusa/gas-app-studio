@@ -1,11 +1,12 @@
 import { useRole, UserRole } from '@/contexts/RoleContext';
-import { User, Shield, Upload } from 'lucide-react';
+import { User, Shield, Upload, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const roles: { value: UserRole; label: string; icon: typeof User }[] = [
   { value: 'employee', label: '員工', icon: User },
   { value: 'manager', label: '主管', icon: Shield },
   { value: 'upload', label: '上傳', icon: Upload },
+  { value: 'admin', label: '後臺', icon: Settings },
 ];
 
 export function RoleSwitcher() {

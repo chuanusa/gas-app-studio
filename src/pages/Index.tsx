@@ -3,6 +3,7 @@ import { RegistrationSection } from '@/components/RegistrationSection';
 import { DepartmentTable } from '@/components/DepartmentTable';
 import { UploadSection } from '@/components/UploadSection';
 import { ManagementSection } from '@/components/ManagementSection';
+import { AdminSection } from '@/components/AdminSection';
 import { CountdownTimer } from '@/components/CountdownTimer';
 import { useRole } from '@/contexts/RoleContext';
 import { Helmet } from 'react-helmet-async';
@@ -43,6 +44,9 @@ const Index = () => {
               <UploadSection />
               <CountdownTimer deadline={DEADLINE} />
             </div>
+          )}
+          {role === 'admin' && (
+            <AdminSection />
           )}
         </main>
         
