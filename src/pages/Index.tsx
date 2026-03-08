@@ -3,7 +3,11 @@ import { RegistrationSection } from '@/components/RegistrationSection';
 import { DepartmentTable } from '@/components/DepartmentTable';
 import { UploadSection } from '@/components/UploadSection';
 import { ManagementSection } from '@/components/ManagementSection';
+import { CountdownTimer } from '@/components/CountdownTimer';
 import { Helmet } from 'react-helmet-async';
+
+// 設定報名截止日期為 14 天後
+const DEADLINE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
 const Index = () => {
   return (
