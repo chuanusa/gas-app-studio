@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { CourseManagement } from '@/components/CourseManagement';
 import { Search, UserPlus, UserX, Edit2, Shield, Users, Activity, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -197,6 +198,9 @@ export function AdminSection() {
           共 {filtered.length} 筆結果（模擬資料）
         </p>
       </StepCard>
+
+      {/* Course Management */}
+      <CourseManagement />
     </div>
   );
 }
