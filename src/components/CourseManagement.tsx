@@ -167,6 +167,14 @@ export function CourseManagement() {
             <SelectItem value="disabled">停用</SelectItem>
           </SelectContent>
         </Select>
+        <Button size="sm" variant="outline" className="gap-1.5 h-9 text-xs" onClick={() => exportData('csv')}>
+          <Download className="w-3.5 h-3.5" />
+          CSV
+        </Button>
+        <Button size="sm" variant="outline" className="gap-1.5 h-9 text-xs" onClick={() => exportData('excel')}>
+          <Download className="w-3.5 h-3.5" />
+          Excel
+        </Button>
         <Button size="sm" className="btn-gradient-primary gap-1.5 h-9 text-xs" onClick={openCreate}>
           <Plus className="w-3.5 h-3.5" />
           新增課程
