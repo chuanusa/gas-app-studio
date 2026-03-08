@@ -28,12 +28,12 @@ export interface Course {
 const categories = ['一般安全', '特殊作業', '消防訓練', '急救訓練', '環境保護', '法規宣導'];
 
 const initialCourses: Course[] = [
-  { id: '1', name: '一般工安教育訓練', category: '一般安全', hours: 3, instructor: '林安全', date: '2024-04-15', location: '第一會議室', capacity: 50, description: '基礎工安觀念與案例分析', enabled: true },
-  { id: '2', name: '高空作業安全講習', category: '特殊作業', hours: 6, instructor: '陳高空', date: '2024-04-18', location: '訓練中心', capacity: 30, description: '高空作業安全規範、防墜設備使用與實作演練', enabled: true },
-  { id: '3', name: '消防安全與逃生演練', category: '消防訓練', hours: 4, instructor: '王消防', date: '2024-04-20', location: '廠區廣場', capacity: 100, description: '滅火器使用、火場逃生要領、緊急疏散演練', enabled: true },
-  { id: '4', name: 'CPR 及 AED 急救訓練', category: '急救訓練', hours: 4, instructor: '張急救', date: '2024-04-22', location: '醫護站', capacity: 25, description: '心肺復甦術與自動體外心臟電擊器操作', enabled: true },
-  { id: '5', name: '有機溶劑作業危害預防', category: '環境保護', hours: 3, instructor: '劉環安', date: '2024-04-25', location: '第二會議室', capacity: 40, description: '有機溶劑種類辨識、個人防護具使用', enabled: false },
-  { id: '6', name: '職業安全衛生法規概論', category: '法規宣導', hours: 2, instructor: '黃法規', date: '2024-04-28', location: '線上', capacity: 200, description: '最新法規修訂重點與合規要求說明', enabled: true },
+  { id: '1', name: '一般工安教育訓練', category: '一般安全', hours: 3, instructor: '林安全', date: '2024-04-15', location: '第一會議室', capacity: 50, enrolled: 42, description: '基礎工安觀念與案例分析', enabled: true },
+  { id: '2', name: '高空作業安全講習', category: '特殊作業', hours: 6, instructor: '陳高空', date: '2024-04-18', location: '訓練中心', capacity: 30, enrolled: 30, description: '高空作業安全規範、防墜設備使用與實作演練', enabled: true },
+  { id: '3', name: '消防安全與逃生演練', category: '消防訓練', hours: 4, instructor: '王消防', date: '2024-04-20', location: '廠區廣場', capacity: 100, enrolled: 67, description: '滅火器使用、火場逃生要領、緊急疏散演練', enabled: true },
+  { id: '4', name: 'CPR 及 AED 急救訓練', category: '急救訓練', hours: 4, instructor: '張急救', date: '2024-04-22', location: '醫護站', capacity: 25, enrolled: 25, description: '心肺復甦術與自動體外心臟電擊器操作', enabled: true },
+  { id: '5', name: '有機溶劑作業危害預防', category: '環境保護', hours: 3, instructor: '劉環安', date: '2024-04-25', location: '第二會議室', capacity: 40, enrolled: 0, description: '有機溶劑種類辨識、個人防護具使用', enabled: false },
+  { id: '6', name: '職業安全衛生法規概論', category: '法規宣導', hours: 2, instructor: '黃法規', date: '2024-04-28', location: '線上', capacity: 200, enrolled: 156, description: '最新法規修訂重點與合規要求說明', enabled: true },
 ];
 
 const emptyCourse: Omit<Course, 'id'> = {
