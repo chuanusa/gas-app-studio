@@ -2,12 +2,47 @@ import { StepCard } from '@/components/ui/StepCard';
 import { DepartmentCard } from '@/components/DepartmentCard';
 import { StatsOverview } from '@/components/StatsOverview';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Printer, Lock, RefreshCw, LayoutGrid, List, Check } from 'lucide-react';
+import { Printer, Lock, RefreshCw, LayoutGrid, List, Check, CheckCircle2, Clock, User } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+
+interface MockPerson {
+  name: string;
+  email: string;
+  registered: boolean;
+  registeredAt?: string;
+}
+
+const mockPersonnelByDept: Record<string, MockPerson[]> = {
+  '人資課': [
+    { name: '王小明', email: 'wang@example.com', registered: true, registeredAt: '2024-01-15' },
+    { name: '李大華', email: 'li@example.com', registered: false },
+    { name: '張美玲', email: 'zhang@example.com', registered: false },
+  ],
+  '政風課': [
+    { name: '陳志強', email: 'chen@example.com', registered: true, registeredAt: '2024-01-12' },
+  ],
+  '工安組': [
+    { name: '林建宏', email: 'lin1@example.com', registered: true, registeredAt: '2024-01-10' },
+    { name: '黃志偉', email: 'huang1@example.com', registered: true, registeredAt: '2024-01-11' },
+    { name: '吳美惠', email: 'wu1@example.com', registered: true, registeredAt: '2024-01-12' },
+    { name: '劉家豪', email: 'liu1@example.com', registered: true, registeredAt: '2024-01-13' },
+    { name: '蔡宗翰', email: 'tsai1@example.com', registered: true, registeredAt: '2024-01-14' },
+    { name: '許雅婷', email: 'hsu1@example.com', registered: true, registeredAt: '2024-01-15' },
+    { name: '鄭文傑', email: 'zheng1@example.com', registered: true, registeredAt: '2024-01-16' },
+  ],
+  '工務組': Array.from({ length: 17 }, (_, i) => ({ name: `工務組員工${i + 1}`, email: `gw${i + 1}@example.com`, registered: true, registeredAt: '2024-01-10' })),
+  '規劃組': Array.from({ length: 20 }, (_, i) => ({ name: `規劃組員工${i + 1}`, email: `gh${i + 1}@example.com`, registered: true, registeredAt: '2024-01-10' })),
+  '檢驗組': Array.from({ length: 20 }, (_, i) => ({ name: `檢驗組員工${i + 1}`, email: `jy${i + 1}@example.com`, registered: true, registeredAt: '2024-01-10' })),
+  '土木隊': Array.from({ length: 15 }, (_, i) => ({ name: `土木隊員工${i + 1}`, email: `tm${i + 1}@example.com`, registered: true, registeredAt: '2024-01-10' })),
+  '建築隊': Array.from({ length: 15 }, (_, i) => ({ name: `建築隊員工${i + 1}`, email: `jz${i + 1}@example.com`, registered: i < 8, registeredAt: i < 8 ? '2024-01-10' : undefined })),
+  '電氣隊': Array.from({ length: 14 }, (_, i) => ({ name: `電氣隊員工${i + 1}`, email: `dq${i + 1}@example.com`, registered: i < 12, registeredAt: i < 12 ? '2024-01-10' : undefined })),
+  '機械隊': Array.from({ length: 21 }, (_, i) => ({ name: `機械隊員工${i + 1}`, email: `jx${i + 1}@example.com`, registered: i < 10, registeredAt: i < 10 ? '2024-01-10' : undefined })),
+  '中部隊': Array.from({ length: 24 }, (_, i) => ({ name: `中部隊員工${i + 1}`, email: `zb${i + 1}@example.com`, registered: i < 4, registeredAt: i < 4 ? '2024-01-10' : undefined })),
+  '南部隊': Array.from({ length: 22 }, (_, i) => ({ name: `南部隊員工${i + 1}`, email: `nb${i + 1}@example.com`, registered: i < 18, registeredAt: i < 18 ? '2024-01-10' : undefined })),
+};
 
 const departmentData = [
   { name: '人資課', current: 1, total: 3, isLocked: false },
@@ -112,7 +147,69 @@ export function DepartmentTable() {
                 })}
               </tbody>
             </table>
+      </div>
+
+      {selectedDept && mockPersonnelByDept[selectedDept] && (
+        <div className="rounded-lg border border-border bg-card overflow-hidden mb-3 animate-fade-in">
+          <div className="flex items-center justify-between px-3 py-2 bg-muted/30 border-b border-border">
+            <div className="flex items-center gap-2">
+              <User className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-semibold text-foreground">{selectedDept} — 人員清單</span>
+            </div>
+            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1 text-[hsl(var(--success))]">
+                <CheckCircle2 className="w-3 h-3" />
+                {mockPersonnelByDept[selectedDept].filter(p => p.registered).length} 已填
+              </span>
+              <span className="inline-flex items-center gap-1 text-[hsl(var(--warning))]">
+                <Clock className="w-3 h-3" />
+                {mockPersonnelByDept[selectedDept].filter(p => !p.registered).length} 未填
+              </span>
+            </div>
           </div>
+          <div className="max-h-[280px] overflow-y-auto">
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-muted/50">
+                <tr className="text-xs text-muted-foreground">
+                  <th className="text-left px-3 py-1.5 font-medium">姓名</th>
+                  <th className="text-left px-3 py-1.5 font-medium hidden sm:table-cell">Email</th>
+                  <th className="text-left px-3 py-1.5 font-medium">填報日期</th>
+                  <th className="text-center px-3 py-1.5 font-medium">狀態</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockPersonnelByDept[selectedDept].map((person, i) => (
+                  <tr 
+                    key={person.email} 
+                    className={cn(
+                      "border-t border-border/50 transition-colors hover:bg-muted/30",
+                      "opacity-0 animate-fade-in"
+                    )}
+                    style={{ animationDelay: `${i * 0.02}s` }}
+                  >
+                    <td className="px-3 py-2 font-medium text-foreground">{person.name}</td>
+                    <td className="px-3 py-2 text-muted-foreground hidden sm:table-cell">{person.email}</td>
+                    <td className="px-3 py-2 text-muted-foreground text-xs">{person.registeredAt ?? '—'}</td>
+                    <td className="px-3 py-2 text-center">
+                      {person.registered ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-[hsl(var(--success))]/10 text-[hsl(var(--success))] font-medium">
+                          <CheckCircle2 className="w-3 h-3" />
+                          已填報
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-[hsl(var(--warning))]/10 text-[hsl(var(--warning))] font-medium">
+                          <Clock className="w-3 h-3" />
+                          未填報
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
         </div>
       )}
 
