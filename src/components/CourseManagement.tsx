@@ -11,6 +11,7 @@ import { BookOpen, Plus, Edit2, Trash2, Search, Clock, MapPin, Users, Calendar, 
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { EnrollmentTrendChart } from '@/components/EnrollmentTrendChart';
+import { CourseAlmostFullAlert } from '@/components/CourseAlmostFullAlert';
 
 export interface Course {
   id: string;
@@ -50,6 +51,7 @@ export function CourseManagement() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [form, setForm] = useState<Omit<Course, 'id'>>(emptyCourse);
+  const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([]);
 
   const filtered = courses.filter(c => {
     const matchSearch = c.name.includes(search) || c.instructor.includes(search);
@@ -124,6 +126,14 @@ export function CourseManagement() {
       <p className="text-xs text-muted-foreground mb-3">
         新增、編輯或停用訓練課程，含講師、時數、地點、人數上限等完整資訊。
       </p>
+
+      {/* Almost Full Alerts */}
+      <CourseAlmostFullAlert
+        courses={courses}
+        threshold={90}
+        dismissedIds={dismissedAlerts}
+        onDismiss={(id) => setDismissedAlerts(prev => [...prev, id])}
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-3">
