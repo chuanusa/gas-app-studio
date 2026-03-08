@@ -3,7 +3,11 @@ import { RegistrationSection } from '@/components/RegistrationSection';
 import { DepartmentTable } from '@/components/DepartmentTable';
 import { UploadSection } from '@/components/UploadSection';
 import { ManagementSection } from '@/components/ManagementSection';
+import { CountdownTimer } from '@/components/CountdownTimer';
 import { Helmet } from 'react-helmet-async';
+
+// 設定報名截止日期為 14 天後
+const DEADLINE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
 const Index = () => {
   return (
@@ -17,9 +21,10 @@ const Index = () => {
         <Header />
         
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          {/* Department Overview - Full Width */}
-          <div className="mb-6">
+          {/* Countdown + Department Overview */}
+          <div className="grid gap-6 lg:grid-cols-[1fr_280px] mb-6">
             <DepartmentTable />
+            <CountdownTimer deadline={DEADLINE} />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
