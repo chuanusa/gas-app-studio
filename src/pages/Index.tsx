@@ -45,6 +45,9 @@ const Index = () => {
               <CountdownTimer deadline={DEADLINE} />
             </div>
           )}
+          {role === 'admin' && (
+            <AdminSection />
+          )}
         </main>
         
         <footer className="border-t border-border bg-muted/30 py-3">
