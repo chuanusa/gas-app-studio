@@ -20,6 +20,7 @@ export interface Course {
   date: string;
   location: string;
   capacity: number;
+  enrolled: number;
   description: string;
   enabled: boolean;
 }
@@ -27,17 +28,17 @@ export interface Course {
 const categories = ['一般安全', '特殊作業', '消防訓練', '急救訓練', '環境保護', '法規宣導'];
 
 const initialCourses: Course[] = [
-  { id: '1', name: '一般工安教育訓練', category: '一般安全', hours: 3, instructor: '林安全', date: '2024-04-15', location: '第一會議室', capacity: 50, description: '基礎工安觀念與案例分析', enabled: true },
-  { id: '2', name: '高空作業安全講習', category: '特殊作業', hours: 6, instructor: '陳高空', date: '2024-04-18', location: '訓練中心', capacity: 30, description: '高空作業安全規範、防墜設備使用與實作演練', enabled: true },
-  { id: '3', name: '消防安全與逃生演練', category: '消防訓練', hours: 4, instructor: '王消防', date: '2024-04-20', location: '廠區廣場', capacity: 100, description: '滅火器使用、火場逃生要領、緊急疏散演練', enabled: true },
-  { id: '4', name: 'CPR 及 AED 急救訓練', category: '急救訓練', hours: 4, instructor: '張急救', date: '2024-04-22', location: '醫護站', capacity: 25, description: '心肺復甦術與自動體外心臟電擊器操作', enabled: true },
-  { id: '5', name: '有機溶劑作業危害預防', category: '環境保護', hours: 3, instructor: '劉環安', date: '2024-04-25', location: '第二會議室', capacity: 40, description: '有機溶劑種類辨識、個人防護具使用', enabled: false },
-  { id: '6', name: '職業安全衛生法規概論', category: '法規宣導', hours: 2, instructor: '黃法規', date: '2024-04-28', location: '線上', capacity: 200, description: '最新法規修訂重點與合規要求說明', enabled: true },
+  { id: '1', name: '一般工安教育訓練', category: '一般安全', hours: 3, instructor: '林安全', date: '2024-04-15', location: '第一會議室', capacity: 50, enrolled: 42, description: '基礎工安觀念與案例分析', enabled: true },
+  { id: '2', name: '高空作業安全講習', category: '特殊作業', hours: 6, instructor: '陳高空', date: '2024-04-18', location: '訓練中心', capacity: 30, enrolled: 30, description: '高空作業安全規範、防墜設備使用與實作演練', enabled: true },
+  { id: '3', name: '消防安全與逃生演練', category: '消防訓練', hours: 4, instructor: '王消防', date: '2024-04-20', location: '廠區廣場', capacity: 100, enrolled: 67, description: '滅火器使用、火場逃生要領、緊急疏散演練', enabled: true },
+  { id: '4', name: 'CPR 及 AED 急救訓練', category: '急救訓練', hours: 4, instructor: '張急救', date: '2024-04-22', location: '醫護站', capacity: 25, enrolled: 25, description: '心肺復甦術與自動體外心臟電擊器操作', enabled: true },
+  { id: '5', name: '有機溶劑作業危害預防', category: '環境保護', hours: 3, instructor: '劉環安', date: '2024-04-25', location: '第二會議室', capacity: 40, enrolled: 0, description: '有機溶劑種類辨識、個人防護具使用', enabled: false },
+  { id: '6', name: '職業安全衛生法規概論', category: '法規宣導', hours: 2, instructor: '黃法規', date: '2024-04-28', location: '線上', capacity: 200, enrolled: 156, description: '最新法規修訂重點與合規要求說明', enabled: true },
 ];
 
 const emptyCourse: Omit<Course, 'id'> = {
   name: '', category: '一般安全', hours: 3, instructor: '', date: '',
-  location: '', capacity: 50, description: '', enabled: true,
+  location: '', capacity: 50, enrolled: 0, description: '', enabled: true,
 };
 
 export function CourseManagement() {
@@ -64,7 +65,7 @@ export function CourseManagement() {
 
   const openEdit = (course: Course) => {
     setEditingCourse(course);
-    setForm({ name: course.name, category: course.category, hours: course.hours, instructor: course.instructor, date: course.date, location: course.location, capacity: course.capacity, description: course.description, enabled: course.enabled });
+    setForm({ name: course.name, category: course.category, hours: course.hours, instructor: course.instructor, date: course.date, location: course.location, capacity: course.capacity, enrolled: course.enrolled, description: course.description, enabled: course.enabled });
     setDialogOpen(true);
   };
 
@@ -101,11 +102,13 @@ export function CourseManagement() {
       </p>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2 mb-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-3">
         {[
           { label: '課程總數', value: courses.length, icon: BookOpen, color: 'text-primary' },
           { label: '啟用中', value: courses.filter(c => c.enabled).length, icon: Calendar, color: 'text-[hsl(var(--success))]' },
           { label: '已停用', value: courses.filter(c => !c.enabled).length, icon: Clock, color: 'text-destructive' },
+          { label: '已報名', value: courses.reduce((a, c) => a + c.enrolled, 0), icon: Users, color: 'text-accent' },
+          { label: '額滿課程', value: courses.filter(c => c.enrolled >= c.capacity).length, icon: MapPin, color: 'text-[hsl(var(--warning))]' },
         ].map(s => (
           <div key={s.label} className="rounded-lg border border-border bg-card p-2.5 flex items-center gap-2.5">
             <div className="p-1.5 rounded-md bg-muted/50">
@@ -158,7 +161,7 @@ export function CourseManagement() {
                 <th className="hidden md:table-cell">講師</th>
                 <th className="hidden lg:table-cell">日期</th>
                 <th className="hidden lg:table-cell">地點</th>
-                <th className="hidden sm:table-cell">人數上限</th>
+                <th className="min-w-[130px]">報名進度</th>
                 <th>狀態</th>
                 <th className="text-right">操作</th>
               </tr>
@@ -181,7 +184,33 @@ export function CourseManagement() {
                   <td className="hidden md:table-cell text-sm text-muted-foreground">{course.instructor}</td>
                   <td className="hidden lg:table-cell text-xs text-muted-foreground">{course.date}</td>
                   <td className="hidden lg:table-cell text-xs text-muted-foreground">{course.location}</td>
-                  <td className="hidden sm:table-cell text-sm">{course.capacity}</td>
+                  <td>
+                    {(() => {
+                      const pct = Math.round((course.enrolled / course.capacity) * 100);
+                      const isFull = course.enrolled >= course.capacity;
+                      return (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[10px]">
+                            <span className={cn("font-semibold", isFull ? "text-[hsl(var(--warning))]" : "text-foreground")}>
+                              {course.enrolled}/{course.capacity}
+                            </span>
+                            <span className="text-muted-foreground">
+                              {isFull ? '額滿' : `剩 ${course.capacity - course.enrolled}`}
+                            </span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className={cn(
+                                "h-full rounded-full transition-all",
+                                isFull ? "bg-[hsl(var(--warning))]" : pct >= 80 ? "bg-accent" : "bg-primary"
+                              )}
+                              style={{ width: `${Math.min(pct, 100)}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </td>
                   <td>
                     <span className={cn(
                       "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium",
