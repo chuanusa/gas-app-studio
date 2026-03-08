@@ -12,19 +12,19 @@ export function RoleSwitcher() {
   const { role, setRole } = useRole();
 
   return (
-    <div className="flex items-center gap-1 p-1 bg-muted/60 rounded-lg border border-border/50">
+    <div className="flex items-center gap-0.5 p-0.5 bg-muted/60 rounded-lg border border-border/50">
       {roles.map((r) => (
         <button
           key={r.value}
           onClick={() => setRole(r.value)}
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
+            "flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium transition-all",
             role === r.value
               ? "bg-background shadow-sm text-foreground"
               : "text-muted-foreground hover:text-foreground"
           )}
         >
-          <r.icon className="w-3.5 h-3.5" />
+          <r.icon className="w-3 h-3" />
           {r.label}
         </button>
       ))}

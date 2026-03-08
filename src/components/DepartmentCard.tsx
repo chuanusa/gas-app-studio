@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils';
-import { CircularProgress } from '@/components/ui/CircularProgress';
 import { CheckCircle2, Clock, Lock, Unlock } from 'lucide-react';
 
 interface DepartmentCardProps {
@@ -19,45 +18,43 @@ export function DepartmentCard({ name, current, total, isLocked, index }: Depart
   return (
     <div 
       className={cn(
-        "card-elevated p-4 transition-all duration-300 hover:scale-[1.02] opacity-0 animate-scale-in",
+        "rounded-lg border border-border/50 bg-card p-3 transition-all duration-200 hover:shadow-md opacity-0 animate-scale-in",
         isComplete && "ring-1 ring-success/20"
       )}
-      style={{ animationDelay: `${0.04 * index}s` }}
+      style={{ animationDelay: `${0.03 * index}s` }}
     >
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <h3 className="font-semibold text-foreground">{name}</h3>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-sm font-semibold text-foreground">{name}</h3>
+        <span className={cn(
+          "inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full",
+          isLocked 
+            ? "text-success bg-success/10" 
+            : "text-muted-foreground bg-muted/50"
+        )}>
+          {isLocked ? <Lock className="w-2.5 h-2.5" /> : <Unlock className="w-2.5 h-2.5" />}
+          {isLocked ? '已鎖定' : '未鎖定'}
+        </span>
+      </div>
+
+      <div className="flex items-end justify-between mb-2">
+        <div className="flex items-baseline gap-1">
           <span className={cn(
-            "inline-flex items-center gap-1 text-[11px] mt-0.5",
-            isLocked ? "text-success" : "text-muted-foreground"
+            "text-xl font-bold",
+            isComplete ? "text-success" : isLow ? "text-warning" : "text-primary"
           )}>
-            {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
-            {isLocked ? '已鎖定' : '未鎖定'}
+            {current}
           </span>
+          <span className="text-xs text-muted-foreground">/ {total}</span>
         </div>
-        <CircularProgress progress={progress} size={52} strokeWidth={4} />
+        <span className={cn(
+          "text-xs font-medium",
+          isComplete ? "text-success" : isLow ? "text-warning" : "text-primary"
+        )}>
+          {Math.round(progress)}%
+        </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        <div className="bg-muted/50 rounded-lg px-3 py-2">
-          <div className="flex items-center gap-1.5 text-muted-foreground text-[11px] mb-0.5">
-            <CheckCircle2 className="w-3 h-3 text-success" />
-            已報名
-          </div>
-          <p className="text-xl font-bold text-foreground">{current}</p>
-        </div>
-        <div className="bg-muted/50 rounded-lg px-3 py-2">
-          <div className="flex items-center gap-1.5 text-muted-foreground text-[11px] mb-0.5">
-            <Clock className={cn("w-3 h-3", remaining > 0 ? "text-warning" : "text-success")} />
-            {remaining > 0 ? '待報名' : '總人數'}
-          </div>
-          <p className={cn("text-xl font-bold", remaining > 0 ? "text-warning" : "text-foreground")}>
-            {remaining > 0 ? remaining : total}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-3 h-1 rounded-full overflow-hidden bg-muted">
+      <div className="h-1.5 rounded-full overflow-hidden bg-muted">
         <div
           className={cn(
             "h-full rounded-full transition-all duration-700 ease-out",

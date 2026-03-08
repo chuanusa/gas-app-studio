@@ -19,40 +19,34 @@ const Index = () => {
         <meta name="description" content="現代化、高效率的員工工安教育訓練數位報名平台。提供個人報名、主管確認、檔案上傳等完整功能。" />
       </Helmet>
       
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <Header />
         
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {role === 'employee' && (
-            <>
+            <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+              <RegistrationSection />
               <CountdownTimer deadline={DEADLINE} />
-              <div className="grid gap-5 lg:grid-cols-2 mt-5">
-                <RegistrationSection />
-              </div>
-            </>
+            </div>
           )}
           {role === 'manager' && (
-            <>
-              <div className="grid gap-5 lg:grid-cols-[1fr_260px]">
+            <div className="space-y-4">
+              <div className="grid gap-4 lg:grid-cols-[1fr_240px]">
                 <DepartmentTable />
                 <CountdownTimer deadline={DEADLINE} />
               </div>
-              <div className="mt-5">
-                <ManagementSection />
-              </div>
-            </>
+              <ManagementSection />
+            </div>
           )}
           {role === 'upload' && (
-            <>
+            <div className="grid gap-4 lg:grid-cols-[1fr_240px]">
+              <UploadSection />
               <CountdownTimer deadline={DEADLINE} />
-              <div className="grid gap-5 mt-5">
-                <UploadSection />
-              </div>
-            </>
+            </div>
           )}
         </main>
         
-        <footer className="border-t border-border bg-muted/30 py-4">
+        <footer className="border-t border-border bg-muted/30 py-3">
           <div className="max-w-6xl mx-auto px-4 text-center text-xs text-muted-foreground">
             © 2024 員工工安教育訓練報名系統
           </div>

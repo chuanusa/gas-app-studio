@@ -34,7 +34,7 @@ export function DepartmentTable() {
 
   return (
     <StepCard step={2} title="主管確認與下載">
-      <p className="text-sm text-muted-foreground mb-4">
+      <p className="text-xs text-muted-foreground mb-3">
         請各部門主管確認同仁填報狀態，確認後可「鎖定」並「列印」簽核總表。
       </p>
 
@@ -45,13 +45,13 @@ export function DepartmentTable() {
         registeredPeople={registeredPeople}
       />
 
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-foreground">各部門報名狀態</h3>
-        <div className="flex items-center gap-0.5 p-0.5 bg-muted/50 rounded-lg">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-xs font-medium text-muted-foreground">各部門報名狀態</h3>
+        <div className="flex items-center gap-0.5 p-0.5 bg-muted/50 rounded-md">
           <button
             onClick={() => setViewMode('grid')}
             className={cn(
-              "p-1.5 rounded-md transition-colors",
+              "p-1 rounded transition-colors",
               viewMode === 'grid' 
                 ? "bg-background shadow-sm text-foreground" 
                 : "text-muted-foreground hover:text-foreground"
@@ -62,7 +62,7 @@ export function DepartmentTable() {
           <button
             onClick={() => setViewMode('list')}
             className={cn(
-              "p-1.5 rounded-md transition-colors",
+              "p-1 rounded transition-colors",
               viewMode === 'list' 
                 ? "bg-background shadow-sm text-foreground" 
                 : "text-muted-foreground hover:text-foreground"
@@ -74,19 +74,19 @@ export function DepartmentTable() {
       </div>
 
       {viewMode === 'grid' ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-5">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 mb-4">
           {departmentData.map((dept, index) => (
             <DepartmentCard key={dept.name} {...dept} index={index} />
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-border overflow-hidden mb-5">
+        <div className="rounded-lg border border-border overflow-hidden mb-4">
           <div className="overflow-x-auto">
             <table className="table-modern">
               <thead>
                 <tr>
                   <th>部門</th>
-                  <th className="min-w-[160px]">填報進度</th>
+                  <th className="min-w-[140px]">填報進度</th>
                   <th>狀態</th>
                 </tr>
               </thead>
@@ -97,9 +97,9 @@ export function DepartmentTable() {
                     <tr 
                       key={dept.name}
                       className="opacity-0 animate-fade-in"
-                      style={{ animationDelay: `${0.3 + index * 0.04}s` }}
+                      style={{ animationDelay: `${0.3 + index * 0.03}s` }}
                     >
-                      <td className="font-medium text-foreground">{dept.name}</td>
+                      <td className="font-medium text-foreground text-sm">{dept.name}</td>
                       <td>
                         <ProgressBar progress={progress} current={dept.current} total={dept.total} size="sm" />
                       </td>
@@ -117,7 +117,7 @@ export function DepartmentTable() {
 
       <div className="flex flex-col sm:flex-row gap-2">
         <Select>
-          <SelectTrigger className="sm:w-56 h-10 bg-background text-sm">
+          <SelectTrigger className="sm:w-48 h-9 bg-background text-sm">
             <SelectValue placeholder="選擇部門以列印..." />
           </SelectTrigger>
           <SelectContent className="bg-popover border border-border shadow-lg z-50">
@@ -127,16 +127,16 @@ export function DepartmentTable() {
           </SelectContent>
         </Select>
 
-        <div className="flex gap-2 flex-wrap">
-          <Button size="sm" className="btn-gradient-primary gap-1.5">
+        <div className="flex gap-1.5 flex-wrap">
+          <Button size="sm" className="btn-gradient-primary gap-1.5 h-9 text-xs">
             <Printer className="w-3.5 h-3.5" />
             列印簽核表
           </Button>
-          <Button size="sm" className="btn-gradient-accent gap-1.5">
+          <Button size="sm" className="btn-gradient-accent gap-1.5 h-9 text-xs">
             <Lock className="w-3.5 h-3.5" />
             鎖定部門
           </Button>
-          <Button size="sm" variant="outline" className="gap-1.5">
+          <Button size="sm" variant="outline" className="gap-1.5 h-9 text-xs">
             <RefreshCw className="w-3.5 h-3.5" />
             重整
           </Button>
