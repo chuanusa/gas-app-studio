@@ -198,6 +198,9 @@ export function AdminSection() {
           共 {filtered.length} 筆結果（模擬資料）
         </p>
       </StepCard>
+
+      {/* Course Management */}
+      <CourseManagement />
     </div>
   );
 }
