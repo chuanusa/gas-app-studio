@@ -39,7 +39,7 @@ export function Header() {
               <span className="text-muted-foreground/40">·</span>
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <GraduationCap className="w-3.5 h-3.5" />
-                <span>{role === 'manager' ? '主管管理模式' : '員工報名模式'}</span>
+                <span>{role === 'manager' ? '主管管理模式' : role === 'upload' ? '上傳管理模式' : '員工報名模式'}</span>
               </div>
             </div>
           </div>
