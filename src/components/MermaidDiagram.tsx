@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Download, Image } from 'lucide-react';
+import { Download, Image, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,7 +12,6 @@ import mermaid from 'mermaid';
 
 // Node descriptions mapping
 export const nodeDescriptions: Record<string, { title: string; description: string }> = {
-  // System Overview
   'A': { title: '使用者登入系統', description: '使用者透過帳號密碼或 SSO 進行身份驗證，系統會記錄登入時間與 IP。' },
   'B': { title: '角色判定', description: '系統根據使用者帳號所綁定的角色（員工、主管、上傳管理員、系統管理員）自動導向對應的操作介面。' },
   'C': { title: '員工操作流程', description: '員工可查看可報名課程、填寫報名表單、上傳所需證書文件。' },
@@ -98,24 +97,106 @@ export function MermaidDiagram({ chart, id, compact = false }: MermaidDiagramPro
   const [svg, setSvg] = useState<string>('');
   const [selectedNode, setSelectedNode] = useState<{ title: string; description: string } | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
     mermaid.initialize({
       startOnLoad: false,
-      theme: isDark ? 'dark' : 'default',
+      theme: 'base',
       securityLevel: 'loose',
       fontFamily: 'Noto Sans TC, system-ui, sans-serif',
+      flowchart: {
+        curve: 'basis',
+        padding: 20,
+        nodeSpacing: 30,
+        rankSpacing: 50,
+        htmlLabels: true,
+        useMaxWidth: true,
+      },
+      sequence: {
+        mirrorActors: false,
+        messageAlign: 'center',
+        boxMargin: 12,
+        noteMargin: 12,
+        messageMargin: 40,
+        actorFontWeight: '600',
+      },
       themeVariables: isDark ? {
-        primaryColor: '#1a7a8a',
-        primaryTextColor: '#e5e7eb',
-        primaryBorderColor: '#2d8a9a',
-        lineColor: '#6b7280',
+        // Dark mode palette
+        primaryColor: '#1e3a5f',
+        primaryTextColor: '#e2e8f0',
+        primaryBorderColor: '#38bdf8',
         secondaryColor: '#1e293b',
+        secondaryTextColor: '#cbd5e1',
+        secondaryBorderColor: '#475569',
         tertiaryColor: '#0f172a',
-        noteBkgColor: '#1e293b',
-        noteTextColor: '#e5e7eb',
-      } : undefined,
+        tertiaryTextColor: '#94a3b8',
+        tertiaryBorderColor: '#334155',
+        lineColor: '#64748b',
+        textColor: '#e2e8f0',
+        mainBkg: '#1e3a5f',
+        nodeBorder: '#38bdf8',
+        clusterBkg: '#0f172a80',
+        clusterBorder: '#334155',
+        titleColor: '#e2e8f0',
+        edgeLabelBackground: '#1e293b',
+        nodeTextColor: '#e2e8f0',
+        // Sequence diagram
+        actorBkg: '#1e3a5f',
+        actorBorder: '#38bdf8',
+        actorTextColor: '#e2e8f0',
+        actorLineColor: '#475569',
+        signalColor: '#94a3b8',
+        signalTextColor: '#e2e8f0',
+        labelBoxBkgColor: '#1e293b',
+        labelBoxBorderColor: '#475569',
+        labelTextColor: '#e2e8f0',
+        loopTextColor: '#cbd5e1',
+        noteBkgColor: '#1a2744',
+        noteTextColor: '#e2e8f0',
+        noteBorderColor: '#38bdf8',
+        activationBkgColor: '#1e3a5f',
+        activationBorderColor: '#38bdf8',
+        sequenceNumberColor: '#0ea5e9',
+      } : {
+        // Light mode palette
+        primaryColor: '#dbeafe',
+        primaryTextColor: '#1e3a5f',
+        primaryBorderColor: '#3b82f6',
+        secondaryColor: '#f0fdf4',
+        secondaryTextColor: '#166534',
+        secondaryBorderColor: '#86efac',
+        tertiaryColor: '#fef3c7',
+        tertiaryTextColor: '#92400e',
+        tertiaryBorderColor: '#fbbf24',
+        lineColor: '#94a3b8',
+        textColor: '#334155',
+        mainBkg: '#dbeafe',
+        nodeBorder: '#3b82f6',
+        clusterBkg: '#f8fafc',
+        clusterBorder: '#cbd5e1',
+        titleColor: '#1e293b',
+        edgeLabelBackground: '#ffffff',
+        nodeTextColor: '#1e3a5f',
+        // Sequence diagram
+        actorBkg: '#dbeafe',
+        actorBorder: '#3b82f6',
+        actorTextColor: '#1e3a5f',
+        actorLineColor: '#cbd5e1',
+        signalColor: '#64748b',
+        signalTextColor: '#334155',
+        labelBoxBkgColor: '#f8fafc',
+        labelBoxBorderColor: '#cbd5e1',
+        labelTextColor: '#334155',
+        loopTextColor: '#475569',
+        noteBkgColor: '#eff6ff',
+        noteTextColor: '#1e3a5f',
+        noteBorderColor: '#3b82f6',
+        activationBkgColor: '#dbeafe',
+        activationBorderColor: '#3b82f6',
+        sequenceNumberColor: '#3b82f6',
+      },
     });
 
     const renderChart = async () => {
@@ -203,39 +284,74 @@ export function MermaidDiagram({ chart, id, compact = false }: MermaidDiagramPro
     img.src = url;
   }, [id]);
 
+  const handleZoomIn = () => setZoom(z => Math.min(z + 0.2, 2.5));
+  const handleZoomOut = () => setZoom(z => Math.max(z - 0.2, 0.4));
+  const handleZoomReset = () => setZoom(1);
+
   return (
     <>
-      <div
-        ref={containerRef}
-        className="overflow-auto p-4 bg-muted/30 rounded-lg cursor-pointer [&_.node]:transition-opacity [&_.node:hover]:opacity-80"
-        dangerouslySetInnerHTML={{ __html: svg }}
-        onClick={handleClick}
-      />
-      <div className="flex items-center justify-between mt-2">
-        <p className="text-xs text-muted-foreground">
-          💡 點擊節點查看詳細說明
+      <div className="relative group">
+        {/* Zoom controls */}
+        <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-card/90 backdrop-blur-sm border border-border/60 rounded-lg p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-sm">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomOut} title="縮小">
+            <ZoomOut className="w-3.5 h-3.5" />
+          </Button>
+          <span className="text-xs text-muted-foreground min-w-[3rem] text-center font-mono">
+            {Math.round(zoom * 100)}%
+          </span>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomIn} title="放大">
+            <ZoomIn className="w-3.5 h-3.5" />
+          </Button>
+          <div className="w-px h-4 bg-border/60" />
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomReset} title="重設">
+            <RotateCcw className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+
+        {/* Diagram container */}
+        <div
+          ref={containerRef}
+          className="overflow-auto rounded-xl border border-border/40 bg-gradient-to-br from-muted/20 via-background to-muted/30 cursor-pointer mermaid-container"
+          style={{ maxHeight: '70vh' }}
+          onClick={handleClick}
+        >
+          <div
+            className="p-6 min-w-fit transition-transform duration-200 origin-top-left"
+            style={{ transform: `scale(${zoom})` }}
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+        </div>
+      </div>
+
+      {/* Footer bar */}
+      <div className="flex items-center justify-between mt-3 px-1">
+        <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+          點擊節點查看詳細說明
         </p>
         {!compact && (
-          <div className="flex gap-1.5">
-            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExportSVG}>
+          <div className="flex gap-1">
+            <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 rounded-lg border-border/60" onClick={handleExportSVG}>
               <Download className="w-3 h-3" />
               SVG
             </Button>
-            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExportPNG}>
+            <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 rounded-lg border-border/60" onClick={handleExportPNG}>
               <Image className="w-3 h-3" />
               PNG
             </Button>
           </div>
         )}
       </div>
+
+      {/* Node detail dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md border-border/60">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary" />
+            <DialogTitle className="flex items-center gap-2.5 text-base">
+              <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-glow" />
               {selectedNode?.title}
             </DialogTitle>
-            <DialogDescription className="text-sm leading-relaxed pt-2">
+            <DialogDescription className="text-sm leading-relaxed pt-3">
               {selectedNode?.description}
             </DialogDescription>
           </DialogHeader>
@@ -245,140 +361,183 @@ export function MermaidDiagram({ chart, id, compact = false }: MermaidDiagramPro
   );
 }
 
-// Chart definitions
+// ─── Chart definitions with styling ────────────────────────────
+
 export const systemOverviewChart = `
 graph TD
-    A[使用者登入系統] --> B{角色判定}
-    B -->|員工| C[員工操作流程]
-    B -->|主管| D[主管操作流程]
-    B -->|上傳管理員| E[檔案管理流程]
-    B -->|系統管理員| F[系統管理流程]
-    C --> G[報名完成]
-    D --> H[審核完成]
-    E --> I[檔案歸檔]
-    F --> J[系統設定完成]
+    A["fa:fa-right-to-bracket 使用者登入系統"]:::startNode --> B{"fa:fa-code-branch 角色判定"}:::decisionNode
+    B -->|"fa:fa-user 員工"| C["fa:fa-clipboard-list 員工操作流程"]:::processNode
+    B -->|"fa:fa-user-tie 主管"| D["fa:fa-chart-bar 主管操作流程"]:::processNode
+    B -->|"fa:fa-upload 上傳管理員"| E["fa:fa-folder-open 檔案管理流程"]:::processNode
+    B -->|"fa:fa-gear 系統管理員"| F["fa:fa-cogs 系統管理流程"]:::processNode
+    C --> G["fa:fa-check-circle 報名完成"]:::successNode
+    D --> H["fa:fa-clipboard-check 審核完成"]:::successNode
+    E --> I["fa:fa-archive 檔案歸檔"]:::successNode
+    F --> J["fa:fa-check-double 系統設定完成"]:::successNode
+
+    classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
+    classDef decisionNode fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e,font-weight:600
+    classDef processNode fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#166534
+    classDef successNode fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46,font-weight:600
 `;
 
 export const employeeFlowChart = `
 flowchart TD
-    Start([進入系統]) --> View[查看可報名課程]
-    View --> Check{是否已報名?}
-    Check -->|是| Status[查看報名狀態]
-    Check -->|否| Fill[填寫報名表單]
-    Fill --> Validate{表單驗證}
-    Validate -->|失敗| Error[顯示錯誤訊息]
+    Start(["fa:fa-play 進入系統"]):::startNode --> View["fa:fa-list 查看可報名課程"]:::processNode
+    View --> Check{"fa:fa-question 是否已報名?"}:::decisionNode
+    Check -->|是| Status["fa:fa-info-circle 查看報名狀態"]:::infoNode
+    Check -->|否| Fill["fa:fa-edit 填寫報名表單"]:::processNode
+    Fill --> Validate{"fa:fa-check 表單驗證"}:::decisionNode
+    Validate -->|失敗| Error["fa:fa-exclamation-triangle 顯示錯誤訊息"]:::errorNode
     Error --> Fill
-    Validate -->|通過| Upload{是否需上傳證書?}
-    Upload -->|是| UploadFile[上傳證書檔案]
-    Upload -->|否| Submit[送出報名]
-    UploadFile --> FileCheck{檔案驗證}
-    FileCheck -->|格式錯誤| FileError[提示檔案格式]
+    Validate -->|通過| Upload{"fa:fa-question 是否需上傳證書?"}:::decisionNode
+    Upload -->|是| UploadFile["fa:fa-cloud-upload-alt 上傳證書檔案"]:::processNode
+    Upload -->|否| Submit["fa:fa-paper-plane 送出報名"]:::actionNode
+    UploadFile --> FileCheck{"fa:fa-file-alt 檔案驗證"}:::decisionNode
+    FileCheck -->|格式錯誤| FileError["fa:fa-times-circle 提示檔案格式"]:::errorNode
     FileError --> UploadFile
     FileCheck -->|通過| Submit
-    Submit --> Confirm[顯示報名成功]
-    Confirm --> Wait[等待主管審核]
-    Wait --> Result{審核結果}
-    Result -->|通過| Done([報名完成])
-    Result -->|駁回| Reason[查看駁回原因]
+    Submit --> Confirm["fa:fa-check-circle 顯示報名成功"]:::successNode
+    Confirm --> Wait["fa:fa-clock 等待主管審核"]:::waitNode
+    Wait --> Result{"fa:fa-gavel 審核結果"}:::decisionNode
+    Result -->|通過| Done(["fa:fa-flag-checkered 報名完成"]):::successNode
+    Result -->|駁回| Reason["fa:fa-comment-alt 查看駁回原因"]:::errorNode
     Reason --> Fill
-    Status --> End([結束])
+    Status --> End(["fa:fa-stop 結束"]):::endNode
+
+    classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
+    classDef processNode fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px,color:#166534
+    classDef decisionNode fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e,font-weight:500
+    classDef errorNode fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#991b1b
+    classDef successNode fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46,font-weight:600
+    classDef actionNode fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#5b21b6,font-weight:500
+    classDef waitNode fill:#faf5ff,stroke:#a855f7,stroke-width:1.5px,color:#6b21a8
+    classDef infoNode fill:#eff6ff,stroke:#60a5fa,stroke-width:1.5px,color:#1d4ed8
+    classDef endNode fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#475569,font-weight:600
 `;
 
 export const managerFlowChart = `
 flowchart TD
-    Start([進入主管頁面]) --> Notify{截止日通知?}
-    Notify -->|是| ViewNotify[查看未報名名單]
-    Notify -->|否| Dashboard[查看部門統計]
+    Start(["fa:fa-play 進入主管頁面"]):::startNode --> Notify{"fa:fa-bell 截止日通知?"}:::decisionNode
+    Notify -->|是| ViewNotify["fa:fa-users 查看未報名名單"]:::processNode
+    Notify -->|否| Dashboard["fa:fa-chart-pie 查看部門統計"]:::infoNode
     ViewNotify --> Dashboard
-    Dashboard --> List[查看部門報名清單]
-    List --> Select[選取報名紀錄]
-    Select --> Review[檢視報名詳情]
-    Review --> Action{審核動作}
-    Action -->|核准| Approve[確認核准]
-    Action -->|駁回| RejectForm[填寫駁回原因]
-    RejectForm --> Reject[確認駁回]
-    Approve --> UpdateStatus[更新報名狀態]
+    Dashboard --> List["fa:fa-list-alt 查看部門報名清單"]:::processNode
+    List --> Select["fa:fa-mouse-pointer 選取報名紀錄"]:::processNode
+    Select --> Review["fa:fa-search 檢視報名詳情"]:::infoNode
+    Review --> Action{"fa:fa-gavel 審核動作"}:::decisionNode
+    Action -->|"fa:fa-check 核准"| Approve["fa:fa-thumbs-up 確認核准"]:::successNode
+    Action -->|"fa:fa-times 駁回"| RejectForm["fa:fa-comment 填寫駁回原因"]:::errorNode
+    RejectForm --> Reject["fa:fa-thumbs-down 確認駁回"]:::errorNode
+    Approve --> UpdateStatus["fa:fa-sync 更新報名狀態"]:::actionNode
     Reject --> UpdateStatus
-    UpdateStatus --> NotifyEmployee[通知員工結果]
-    NotifyEmployee --> More{還有待審核?}
+    UpdateStatus --> NotifyEmployee["fa:fa-envelope 通知員工結果"]:::actionNode
+    NotifyEmployee --> More{"fa:fa-question 還有待審核?"}:::decisionNode
     More -->|是| Select
-    More -->|否| Export{匯出資料?}
-    Export -->|是| ExportData[匯出 CSV/Excel]
-    Export -->|否| End([結束])
+    More -->|否| Export{"fa:fa-download 匯出資料?"}:::decisionNode
+    Export -->|是| ExportData["fa:fa-file-excel 匯出 CSV/Excel"]:::processNode
+    Export -->|否| End(["fa:fa-stop 結束"]):::endNode
     ExportData --> End
+
+    classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
+    classDef processNode fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px,color:#166534
+    classDef decisionNode fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e,font-weight:500
+    classDef errorNode fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#991b1b
+    classDef successNode fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46,font-weight:600
+    classDef actionNode fill:#ede9fe,stroke:#8b5cf6,stroke-width:1.5px,color:#5b21b6
+    classDef infoNode fill:#eff6ff,stroke:#60a5fa,stroke-width:1.5px,color:#1d4ed8
+    classDef endNode fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#475569,font-weight:600
 `;
 
 export const uploadAdminFlowChart = `
 flowchart TD
-    Start([進入上傳管理頁面]) --> Choose{操作選擇}
-    Choose -->|上傳| SelectFiles[選擇檔案]
-    Choose -->|管理| Browse[瀏覽已上傳檔案]
-    SelectFiles --> DragDrop[拖曳或點選上傳]
-    DragDrop --> FileValidate{檔案驗證}
-    FileValidate -->|不符| ShowError[顯示錯誤]
+    Start(["fa:fa-play 進入上傳管理頁面"]):::startNode --> Choose{"fa:fa-arrows-alt 操作選擇"}:::decisionNode
+    Choose -->|"fa:fa-upload 上傳"| SelectFiles["fa:fa-file-import 選擇檔案"]:::processNode
+    Choose -->|"fa:fa-folder 管理"| Browse["fa:fa-folder-open 瀏覽已上傳檔案"]:::processNode
+    SelectFiles --> DragDrop["fa:fa-hand-pointer 拖曳或點選上傳"]:::processNode
+    DragDrop --> FileValidate{"fa:fa-shield-alt 檔案驗證"}:::decisionNode
+    FileValidate -->|不符| ShowError["fa:fa-exclamation-circle 顯示錯誤"]:::errorNode
     ShowError --> SelectFiles
-    FileValidate -->|通過| Categorize[選擇分類]
-    Categorize --> AddDesc[填寫說明]
-    AddDesc --> UploadAction[開始上傳]
-    UploadAction --> Progress[顯示上傳進度]
-    Progress --> Complete{上傳完成?}
-    Complete -->|成功| Success[顯示成功訊息]
-    Complete -->|失敗| Retry[重試上傳]
+    FileValidate -->|通過| Categorize["fa:fa-tags 選擇分類"]:::processNode
+    Categorize --> AddDesc["fa:fa-pen 填寫說明"]:::processNode
+    AddDesc --> UploadAction["fa:fa-cloud-upload-alt 開始上傳"]:::actionNode
+    UploadAction --> Progress["fa:fa-spinner 顯示上傳進度"]:::waitNode
+    Progress --> Complete{"fa:fa-check-double 上傳完成?"}:::decisionNode
+    Complete -->|成功| Success["fa:fa-check-circle 顯示成功訊息"]:::successNode
+    Complete -->|失敗| Retry["fa:fa-redo 重試上傳"]:::errorNode
     Retry --> UploadAction
-    Success --> End([結束])
-    Browse --> Filter[篩選檔案]
-    Filter --> FileAction{檔案操作}
-    FileAction -->|下載| Download[下載檔案]
-    FileAction -->|刪除| ConfirmDel[確認刪除]
-    FileAction -->|預覽| Preview[檔案預覽]
-    ConfirmDel --> Delete[執行刪除]
+    Success --> End(["fa:fa-stop 結束"]):::endNode
+    Browse --> Filter["fa:fa-filter 篩選檔案"]:::processNode
+    Filter --> FileAction{"fa:fa-ellipsis-h 檔案操作"}:::decisionNode
+    FileAction -->|"fa:fa-download 下載"| Download["fa:fa-file-download 下載檔案"]:::processNode
+    FileAction -->|"fa:fa-trash 刪除"| ConfirmDel["fa:fa-exclamation-triangle 確認刪除"]:::errorNode
+    FileAction -->|"fa:fa-eye 預覽"| Preview["fa:fa-search-plus 檔案預覽"]:::infoNode
+    ConfirmDel --> Delete["fa:fa-trash-alt 執行刪除"]:::errorNode
     Download --> End
     Delete --> End
     Preview --> End
+
+    classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
+    classDef processNode fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px,color:#166534
+    classDef decisionNode fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e,font-weight:500
+    classDef errorNode fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#991b1b
+    classDef successNode fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46,font-weight:600
+    classDef actionNode fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#5b21b6,font-weight:500
+    classDef waitNode fill:#faf5ff,stroke:#a855f7,stroke-width:1.5px,color:#6b21a8
+    classDef infoNode fill:#eff6ff,stroke:#60a5fa,stroke-width:1.5px,color:#1d4ed8
+    classDef endNode fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#475569,font-weight:600
 `;
 
 export const adminFlowChart = `
 flowchart TD
-    Start([進入管理後台]) --> Tab{功能選擇}
-    Tab -->|帳號管理| UserList[使用者列表]
-    Tab -->|課程管理| CourseList[課程列表]
-    Tab -->|系統設定| Settings[系統設定]
-    UserList --> Search[搜尋篩選使用者]
-    Search --> UserAction{帳號操作}
-    UserAction -->|新增| CreateForm[填寫帳號資料]
-    UserAction -->|編輯| EditForm[修改帳號資料]
-    UserAction -->|停用| DisableConfirm[確認停用]
-    CreateForm --> AssignRole[指派角色權限]
-    AssignRole --> SaveUser[儲存帳號]
+    Start(["fa:fa-play 進入管理後台"]):::startNode --> Tab{"fa:fa-th-large 功能選擇"}:::decisionNode
+    Tab -->|"fa:fa-users 帳號管理"| UserList["fa:fa-address-book 使用者列表"]:::processNode
+    Tab -->|"fa:fa-book 課程管理"| CourseList["fa:fa-graduation-cap 課程列表"]:::processNode
+    Tab -->|"fa:fa-cog 系統設定"| Settings["fa:fa-sliders-h 系統設定"]:::processNode
+    UserList --> Search["fa:fa-search 搜尋篩選使用者"]:::processNode
+    Search --> UserAction{"fa:fa-user-cog 帳號操作"}:::decisionNode
+    UserAction -->|"fa:fa-plus 新增"| CreateForm["fa:fa-user-plus 填寫帳號資料"]:::actionNode
+    UserAction -->|"fa:fa-edit 編輯"| EditForm["fa:fa-user-edit 修改帳號資料"]:::actionNode
+    UserAction -->|"fa:fa-ban 停用"| DisableConfirm["fa:fa-exclamation-triangle 確認停用"]:::errorNode
+    CreateForm --> AssignRole["fa:fa-user-tag 指派角色權限"]:::processNode
+    AssignRole --> SaveUser["fa:fa-save 儲存帳號"]:::successNode
     EditForm --> SaveUser
     DisableConfirm --> SaveUser
-    SaveUser --> End([返回列表])
+    SaveUser --> End(["fa:fa-arrow-left 返回列表"]):::endNode
+
+    classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
+    classDef processNode fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px,color:#166534
+    classDef decisionNode fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e,font-weight:500
+    classDef errorNode fill:#fef2f2,stroke:#ef4444,stroke-width:1.5px,color:#991b1b
+    classDef successNode fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46,font-weight:600
+    classDef actionNode fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#5b21b6,font-weight:500
+    classDef endNode fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#475569,font-weight:600
 `;
 
 export const designArchitectureChart = `
 graph TB
-    subgraph Pages["頁面層 Pages"]
-        P1["Index 首頁"]
-        P2["FlowchartPage 流程圖頁"]
-        P3["NotFound 404頁面"]
+    subgraph Pages["fa:fa-file 頁面層 Pages"]
+        P1["fa:fa-home Index 首頁"]:::pageNode
+        P2["fa:fa-project-diagram FlowchartPage 流程圖頁"]:::pageNode
+        P3["fa:fa-exclamation-circle NotFound 404頁面"]:::pageNode
     end
-    subgraph Sections["區塊元件 Sections"]
-        S1["RegistrationSection 員工報名區"]
-        S2["ManagementSection 主管管理區"]
-        S3["UploadSection 檔案上傳區"]
-        S4["AdminSection 系統管理區"]
+    subgraph Sections["fa:fa-puzzle-piece 區塊元件 Sections"]
+        S1["fa:fa-clipboard RegistrationSection"]:::sectionNode
+        S2["fa:fa-tasks ManagementSection"]:::sectionNode
+        S3["fa:fa-upload UploadSection"]:::sectionNode
+        S4["fa:fa-cogs AdminSection"]:::sectionNode
     end
-    subgraph Components["功能元件 Components"]
-        C1["Header 頂部導覽列"]
-        C2["StatsOverview 統計概覽"]
-        C3["DepartmentTable 部門表格"]
-        C4["CourseManagement 課程管理"]
+    subgraph Components["fa:fa-cubes 功能元件 Components"]
+        C1["fa:fa-bars Header"]:::compNode
+        C2["fa:fa-chart-line StatsOverview"]:::compNode
+        C3["fa:fa-table DepartmentTable"]:::compNode
+        C4["fa:fa-book CourseManagement"]:::compNode
     end
-    subgraph UIComponents["基礎 UI 元件"]
-        U1["Button 按鈕"]
-        U2["Card 卡片"]
-        U3["Table 表格"]
-        U4["Dialog 對話框"]
+    subgraph UIComponents["fa:fa-palette 基礎 UI 元件"]
+        U1["fa:fa-square Button"]:::uiNode
+        U2["fa:fa-id-card Card"]:::uiNode
+        U3["fa:fa-th Table"]:::uiNode
+        U4["fa:fa-window-maximize Dialog"]:::uiNode
     end
     P1 --> S1
     P1 --> S2
@@ -392,22 +551,33 @@ graph TB
     C2 --> U2
     C3 --> U3
     C4 --> U4
+
+    classDef pageNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
+    classDef sectionNode fill:#fef3c7,stroke:#f59e0b,stroke-width:1.5px,color:#92400e
+    classDef compNode fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px,color:#166534
+    classDef uiNode fill:#faf5ff,stroke:#a855f7,stroke-width:1.5px,color:#6b21a8
 `;
 
 export const dataFlowChart = `
 sequenceDiagram
-    participant U as 使用者
-    participant C as React元件
-    participant CTX as Context
-    participant API as API層
-    participant DB as 資料庫
+    participant U as fa:fa-user 使用者
+    participant C as fa:fa-desktop React元件
+    participant CTX as fa:fa-database Context
+    participant API as fa:fa-server API層
+    participant DB as fa:fa-hdd 資料庫
     U->>C: 操作介面
+    activate C
     C->>CTX: 讀取/更新狀態
     CTX-->>C: 返回狀態
     C->>API: 發送請求
+    activate API
     API->>DB: 資料操作
+    activate DB
     DB-->>API: 返回結果
+    deactivate DB
     API-->>C: 響應資料
+    deactivate API
     C->>C: 更新UI
     C-->>U: 顯示結果
+    deactivate C
 `;
