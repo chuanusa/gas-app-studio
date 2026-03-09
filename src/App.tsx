@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { RoleProvider } from "@/contexts/RoleContext";
 import { ThemeColorProvider } from "@/contexts/ThemeColorContext";
 import Index from "./pages/Index";
+import FlowchartPage from "./pages/FlowchartPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/flowchart" element={<FlowchartPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
