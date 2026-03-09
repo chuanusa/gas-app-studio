@@ -390,28 +390,28 @@ flowchart TD
 
 const designArchitectureChart = `
 graph TB
-    subgraph Pages
-        P1[Index]
-        P2[FlowchartPage]
-        P3[NotFound]
+    subgraph Pages["頁面層 Pages"]
+        P1["Index 首頁"]
+        P2["FlowchartPage 流程圖頁"]
+        P3["NotFound 404頁面"]
     end
-    subgraph Sections
-        S1[RegistrationSection]
-        S2[ManagementSection]
-        S3[UploadSection]
-        S4[AdminSection]
+    subgraph Sections["區塊元件 Sections"]
+        S1["RegistrationSection 員工報名區"]
+        S2["ManagementSection 主管管理區"]
+        S3["UploadSection 檔案上傳區"]
+        S4["AdminSection 系統管理區"]
     end
-    subgraph Components
-        C1[Header]
-        C2[StatsOverview]
-        C3[DepartmentTable]
-        C4[CourseManagement]
+    subgraph Components["功能元件 Components"]
+        C1["Header 頂部導覽列"]
+        C2["StatsOverview 統計概覽"]
+        C3["DepartmentTable 部門表格"]
+        C4["CourseManagement 課程管理"]
     end
-    subgraph UIComponents
-        U1[Button]
-        U2[Card]
-        U3[Table]
-        U4[Dialog]
+    subgraph UIComponents["基礎 UI 元件"]
+        U1["Button 按鈕"]
+        U2["Card 卡片"]
+        U3["Table 表格"]
+        U4["Dialog 對話框"]
     end
     P1 --> S1
     P1 --> S2
