@@ -1,6 +1,8 @@
-import { Shield } from 'lucide-react';
+import { Shield, Workflow } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { RoleSwitcher } from '@/components/RoleSwitcher';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import { Button } from '@/components/ui/button';
 
 export function Header() {
   return (
@@ -20,6 +22,12 @@ export function Header() {
 
           {/* Controls */}
           <div className="flex items-center gap-3">
+            <Link to="/flowchart">
+              <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
+                <Workflow className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">流程圖</span>
+              </Button>
+            </Link>
             <RoleSwitcher />
             <div className="w-px h-5 bg-border hidden sm:block" />
             <ThemeSwitcher />
