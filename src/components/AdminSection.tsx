@@ -6,8 +6,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CourseManagement } from '@/components/CourseManagement';
-import { Search, UserPlus, UserX, Edit2, Shield, Users, Activity, BarChart3 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, UserPlus, UserX, Edit2, Shield, Users, Activity, BarChart3, Workflow, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  MermaidDiagram,
+  designArchitectureChart,
+  adminFlowChart,
+  systemOverviewChart,
+} from '@/components/MermaidDiagram';
 
 interface MockUser {
   id: string;
@@ -201,6 +209,74 @@ export function AdminSection() {
 
       {/* Course Management */}
       <CourseManagement />
+
+      {/* Flowcharts */}
+      <StepCard step={3} title="設計與操作流程圖">
+        <p className="text-xs text-muted-foreground mb-3">
+          檢視系統設計架構與管理員操作流程，點擊節點可查看詳細說明。
+        </p>
+        <Tabs defaultValue="admin-op" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-3 h-auto gap-1 bg-muted/50 p-1">
+            <TabsTrigger value="admin-op" className="text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Workflow className="w-3.5 h-3.5" />
+              管理員操作流程
+            </TabsTrigger>
+            <TabsTrigger value="design-arch" className="text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Settings className="w-3.5 h-3.5" />
+              元件架構圖
+            </TabsTrigger>
+            <TabsTrigger value="sys-overview" className="text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Users className="w-3.5 h-3.5" />
+              系統總覽
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="admin-op">
+            <Card className="border-border/50">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Workflow className="w-4 h-4 text-primary" />
+                  系統管理員操作流程
+                </CardTitle>
+                <CardDescription className="text-xs">帳號管理、課程設定、系統配置的完整操作流程</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MermaidDiagram chart={adminFlowChart} id="admin-embed-flow" compact />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="design-arch">
+            <Card className="border-border/50">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-primary" />
+                  系統元件架構圖
+                </CardTitle>
+                <CardDescription className="text-xs">展示頁面層、區塊元件、功能元件與 UI 元件的層級關係</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MermaidDiagram chart={designArchitectureChart} id="admin-embed-arch" compact />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="sys-overview">
+            <Card className="border-border/50">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Users className="w-4 h-4 text-primary" />
+                  系統整體流程
+                </CardTitle>
+                <CardDescription className="text-xs">不同角色進入系統後的操作路徑與最終結果</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <MermaidDiagram chart={systemOverviewChart} id="admin-embed-overview" compact />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </StepCard>
     </div>
   );
 }
