@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import mermaid from 'mermaid';
-import DOMPurify from 'dompurify';
+
 
 // Node descriptions mapping
 const nodeDescriptions: Record<string, { title: string; description: string }> = {
