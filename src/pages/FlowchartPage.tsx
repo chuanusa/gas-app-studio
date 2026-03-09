@@ -157,8 +157,9 @@ function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
         const uniqueId = `${id}-${Date.now()}`;
         const { svg: rawSvg } = await mermaid.render(uniqueId, chart);
         const sanitized = DOMPurify.sanitize(rawSvg, {
-          ADD_TAGS: ['foreignObject'],
-          ADD_ATTR: ['xmlns', 'xmlns:xlink', 'viewBox', 'transform', 'style', 'marker-end', 'dominant-baseline', 'text-anchor'],
+          USE_PROFILES: { svg: true, svgFilters: true, html: true },
+          ADD_TAGS: ['foreignObject', 'style'],
+          ADD_ATTR: ['xmlns', 'xmlns:xlink', 'viewBox', 'transform', 'style', 'marker-end', 'dominant-baseline', 'text-anchor', 'requiredFeatures', 'clip-path', 'fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linejoin', 'stroke-linecap', 'x', 'y', 'rx', 'ry', 'dx', 'dy', 'width', 'height', 'd', 'cx', 'cy', 'r', 'points', 'font-size', 'font-family', 'font-weight', 'letter-spacing', 'word-spacing'],
         });
         setSvg(sanitized);
       } catch (error) {
