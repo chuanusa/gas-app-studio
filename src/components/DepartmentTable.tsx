@@ -2,11 +2,13 @@ import { StepCard } from '@/components/ui/StepCard';
 import { DepartmentCard } from '@/components/DepartmentCard';
 import { StatsOverview } from '@/components/StatsOverview';
 import { Button } from '@/components/ui/button';
-import { Printer, Lock, RefreshCw, LayoutGrid, List, Check, CheckCircle2, Clock, User } from 'lucide-react';
+import { Printer, Lock, RefreshCw, LayoutGrid, List, Check, CheckCircle2, Clock, User, FileDown } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { exportToCSV } from '@/lib/exportUtils';
+import { toast } from 'sonner';
 
 interface MockPerson {
   name: string;
@@ -256,6 +258,32 @@ export function DepartmentTable() {
         <Button size="sm" variant="outline" className="gap-1.5 h-9 text-xs">
           <RefreshCw className="w-3.5 h-3.5" />
           重整
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5 h-9 text-xs"
+          onClick={() => {
+            const deptFilter = selectedDept ? [selectedDept] : departmentData.map(d => d.name);
+            const rows: Record<string, string>[] = [];
+            deptFilter.forEach(deptName => {
+              const people = mockPersonnelByDept[deptName] || [];
+              people.forEach(p => {
+                rows.push({
+                  '部門': deptName,
+                  '姓名': p.name,
+                  'Email': p.email,
+                  '狀態': p.registered ? '已填報' : '未填報',
+                  '填報日期': p.registeredAt ?? '',
+                });
+              });
+            });
+            exportToCSV(rows, `報名資料_${selectedDept || '全部門'}_${new Date().toISOString().slice(0, 10)}`);
+            toast.success('CSV 檔案已下載');
+          }}
+        >
+          <FileDown className="w-3.5 h-3.5" />
+          匯出 CSV
         </Button>
       </div>
     </StepCard>
