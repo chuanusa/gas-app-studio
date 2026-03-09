@@ -365,15 +365,15 @@ export function MermaidDiagram({ chart, id, compact = false }: MermaidDiagramPro
 
 export const systemOverviewChart = `
 graph TD
-    A["fa:fa-right-to-bracket 使用者登入系統"]:::startNode --> B{"fa:fa-code-branch 角色判定"}:::decisionNode
-    B -->|"fa:fa-user 員工"| C["fa:fa-clipboard-list 員工操作流程"]:::processNode
-    B -->|"fa:fa-user-tie 主管"| D["fa:fa-chart-bar 主管操作流程"]:::processNode
-    B -->|"fa:fa-upload 上傳管理員"| E["fa:fa-folder-open 檔案管理流程"]:::processNode
-    B -->|"fa:fa-gear 系統管理員"| F["fa:fa-cogs 系統管理流程"]:::processNode
-    C --> G["fa:fa-check-circle 報名完成"]:::successNode
-    D --> H["fa:fa-clipboard-check 審核完成"]:::successNode
-    E --> I["fa:fa-archive 檔案歸檔"]:::successNode
-    F --> J["fa:fa-check-double 系統設定完成"]:::successNode
+    A["🔐 使用者登入系統"]:::startNode --> B{"🔀 角色判定"}:::decisionNode
+    B -->|"👤 員工"| C["📋 員工操作流程"]:::processNode
+    B -->|"👔 主管"| D["📊 主管操作流程"]:::processNode
+    B -->|"📤 上傳管理員"| E["📂 檔案管理流程"]:::processNode
+    B -->|"⚙️ 系統管理員"| F["🔧 系統管理流程"]:::processNode
+    C --> G["✅ 報名完成"]:::successNode
+    D --> H["📝 審核完成"]:::successNode
+    E --> I["🗃️ 檔案歸檔"]:::successNode
+    F --> J["✔️ 系統設定完成"]:::successNode
 
     classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
     classDef decisionNode fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e,font-weight:600
@@ -383,27 +383,27 @@ graph TD
 
 export const employeeFlowChart = `
 flowchart TD
-    Start(["fa:fa-play 進入系統"]):::startNode --> View["fa:fa-list 查看可報名課程"]:::processNode
-    View --> Check{"fa:fa-question 是否已報名?"}:::decisionNode
-    Check -->|是| Status["fa:fa-info-circle 查看報名狀態"]:::infoNode
-    Check -->|否| Fill["fa:fa-edit 填寫報名表單"]:::processNode
-    Fill --> Validate{"fa:fa-check 表單驗證"}:::decisionNode
-    Validate -->|失敗| Error["fa:fa-exclamation-triangle 顯示錯誤訊息"]:::errorNode
+    Start(["▶️ 進入系統"]):::startNode --> View["📃 查看可報名課程"]:::processNode
+    View --> Check{"❓ 是否已報名?"}:::decisionNode
+    Check -->|是| Status["ℹ️ 查看報名狀態"]:::infoNode
+    Check -->|否| Fill["✏️ 填寫報名表單"]:::processNode
+    Fill --> Validate{"✅ 表單驗證"}:::decisionNode
+    Validate -->|失敗| Error["⚠️ 顯示錯誤訊息"]:::errorNode
     Error --> Fill
-    Validate -->|通過| Upload{"fa:fa-question 是否需上傳證書?"}:::decisionNode
-    Upload -->|是| UploadFile["fa:fa-cloud-upload-alt 上傳證書檔案"]:::processNode
-    Upload -->|否| Submit["fa:fa-paper-plane 送出報名"]:::actionNode
-    UploadFile --> FileCheck{"fa:fa-file-alt 檔案驗證"}:::decisionNode
-    FileCheck -->|格式錯誤| FileError["fa:fa-times-circle 提示檔案格式"]:::errorNode
+    Validate -->|通過| Upload{"❓ 是否需上傳證書?"}:::decisionNode
+    Upload -->|是| UploadFile["☁️ 上傳證書檔案"]:::processNode
+    Upload -->|否| Submit["📨 送出報名"]:::actionNode
+    UploadFile --> FileCheck{"📄 檔案驗證"}:::decisionNode
+    FileCheck -->|格式錯誤| FileError["❌ 提示檔案格式"]:::errorNode
     FileError --> UploadFile
     FileCheck -->|通過| Submit
-    Submit --> Confirm["fa:fa-check-circle 顯示報名成功"]:::successNode
-    Confirm --> Wait["fa:fa-clock 等待主管審核"]:::waitNode
-    Wait --> Result{"fa:fa-gavel 審核結果"}:::decisionNode
-    Result -->|通過| Done(["fa:fa-flag-checkered 報名完成"]):::successNode
-    Result -->|駁回| Reason["fa:fa-comment-alt 查看駁回原因"]:::errorNode
+    Submit --> Confirm["✅ 顯示報名成功"]:::successNode
+    Confirm --> Wait["⏳ 等待主管審核"]:::waitNode
+    Wait --> Result{"⚖️ 審核結果"}:::decisionNode
+    Result -->|通過| Done(["🏁 報名完成"]):::successNode
+    Result -->|駁回| Reason["💬 查看駁回原因"]:::errorNode
     Reason --> Fill
-    Status --> End(["fa:fa-stop 結束"]):::endNode
+    Status --> End(["🛑 結束"]):::endNode
 
     classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
     classDef processNode fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px,color:#166534
@@ -418,25 +418,25 @@ flowchart TD
 
 export const managerFlowChart = `
 flowchart TD
-    Start(["fa:fa-play 進入主管頁面"]):::startNode --> Notify{"fa:fa-bell 截止日通知?"}:::decisionNode
-    Notify -->|是| ViewNotify["fa:fa-users 查看未報名名單"]:::processNode
-    Notify -->|否| Dashboard["fa:fa-chart-pie 查看部門統計"]:::infoNode
+    Start(["▶️ 進入主管頁面"]):::startNode --> Notify{"🔔 截止日通知?"}:::decisionNode
+    Notify -->|是| ViewNotify["👥 查看未報名名單"]:::processNode
+    Notify -->|否| Dashboard["📊 查看部門統計"]:::infoNode
     ViewNotify --> Dashboard
-    Dashboard --> List["fa:fa-list-alt 查看部門報名清單"]:::processNode
-    List --> Select["fa:fa-mouse-pointer 選取報名紀錄"]:::processNode
-    Select --> Review["fa:fa-search 檢視報名詳情"]:::infoNode
-    Review --> Action{"fa:fa-gavel 審核動作"}:::decisionNode
-    Action -->|"fa:fa-check 核准"| Approve["fa:fa-thumbs-up 確認核准"]:::successNode
-    Action -->|"fa:fa-times 駁回"| RejectForm["fa:fa-comment 填寫駁回原因"]:::errorNode
-    RejectForm --> Reject["fa:fa-thumbs-down 確認駁回"]:::errorNode
-    Approve --> UpdateStatus["fa:fa-sync 更新報名狀態"]:::actionNode
+    Dashboard --> List["📋 查看部門報名清單"]:::processNode
+    List --> Select["🖱️ 選取報名紀錄"]:::processNode
+    Select --> Review["🔍 檢視報名詳情"]:::infoNode
+    Review --> Action{"⚖️ 審核動作"}:::decisionNode
+    Action -->|"✅ 核准"| Approve["👍 確認核准"]:::successNode
+    Action -->|"❌ 駁回"| RejectForm["💬 填寫駁回原因"]:::errorNode
+    RejectForm --> Reject["👎 確認駁回"]:::errorNode
+    Approve --> UpdateStatus["🔄 更新報名狀態"]:::actionNode
     Reject --> UpdateStatus
-    UpdateStatus --> NotifyEmployee["fa:fa-envelope 通知員工結果"]:::actionNode
-    NotifyEmployee --> More{"fa:fa-question 還有待審核?"}:::decisionNode
+    UpdateStatus --> NotifyEmployee["📧 通知員工結果"]:::actionNode
+    NotifyEmployee --> More{"❓ 還有待審核?"}:::decisionNode
     More -->|是| Select
-    More -->|否| Export{"fa:fa-download 匯出資料?"}:::decisionNode
-    Export -->|是| ExportData["fa:fa-file-excel 匯出 CSV/Excel"]:::processNode
-    Export -->|否| End(["fa:fa-stop 結束"]):::endNode
+    More -->|否| Export{"📥 匯出資料?"}:::decisionNode
+    Export -->|是| ExportData["📊 匯出 CSV/Excel"]:::processNode
+    Export -->|否| End(["🛑 結束"]):::endNode
     ExportData --> End
 
     classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
@@ -451,28 +451,28 @@ flowchart TD
 
 export const uploadAdminFlowChart = `
 flowchart TD
-    Start(["fa:fa-play 進入上傳管理頁面"]):::startNode --> Choose{"fa:fa-arrows-alt 操作選擇"}:::decisionNode
-    Choose -->|"fa:fa-upload 上傳"| SelectFiles["fa:fa-file-import 選擇檔案"]:::processNode
-    Choose -->|"fa:fa-folder 管理"| Browse["fa:fa-folder-open 瀏覽已上傳檔案"]:::processNode
-    SelectFiles --> DragDrop["fa:fa-hand-pointer 拖曳或點選上傳"]:::processNode
-    DragDrop --> FileValidate{"fa:fa-shield-alt 檔案驗證"}:::decisionNode
-    FileValidate -->|不符| ShowError["fa:fa-exclamation-circle 顯示錯誤"]:::errorNode
+    Start(["▶️ 進入上傳管理頁面"]):::startNode --> Choose{"↔️ 操作選擇"}:::decisionNode
+    Choose -->|"📤 上傳"| SelectFiles["📥 選擇檔案"]:::processNode
+    Choose -->|"📁 管理"| Browse["📂 瀏覽已上傳檔案"]:::processNode
+    SelectFiles --> DragDrop["👆 拖曳或點選上傳"]:::processNode
+    DragDrop --> FileValidate{"🛡️ 檔案驗證"}:::decisionNode
+    FileValidate -->|不符| ShowError["🚫 顯示錯誤"]:::errorNode
     ShowError --> SelectFiles
-    FileValidate -->|通過| Categorize["fa:fa-tags 選擇分類"]:::processNode
-    Categorize --> AddDesc["fa:fa-pen 填寫說明"]:::processNode
-    AddDesc --> UploadAction["fa:fa-cloud-upload-alt 開始上傳"]:::actionNode
-    UploadAction --> Progress["fa:fa-spinner 顯示上傳進度"]:::waitNode
-    Progress --> Complete{"fa:fa-check-double 上傳完成?"}:::decisionNode
-    Complete -->|成功| Success["fa:fa-check-circle 顯示成功訊息"]:::successNode
-    Complete -->|失敗| Retry["fa:fa-redo 重試上傳"]:::errorNode
+    FileValidate -->|通過| Categorize["🏷️ 選擇分類"]:::processNode
+    Categorize --> AddDesc["✏️ 填寫說明"]:::processNode
+    AddDesc --> UploadAction["☁️ 開始上傳"]:::actionNode
+    UploadAction --> Progress["⏳ 顯示上傳進度"]:::waitNode
+    Progress --> Complete{"✔️ 上傳完成?"}:::decisionNode
+    Complete -->|成功| Success["✅ 顯示成功訊息"]:::successNode
+    Complete -->|失敗| Retry["🔁 重試上傳"]:::errorNode
     Retry --> UploadAction
-    Success --> End(["fa:fa-stop 結束"]):::endNode
-    Browse --> Filter["fa:fa-filter 篩選檔案"]:::processNode
-    Filter --> FileAction{"fa:fa-ellipsis-h 檔案操作"}:::decisionNode
-    FileAction -->|"fa:fa-download 下載"| Download["fa:fa-file-download 下載檔案"]:::processNode
-    FileAction -->|"fa:fa-trash 刪除"| ConfirmDel["fa:fa-exclamation-triangle 確認刪除"]:::errorNode
-    FileAction -->|"fa:fa-eye 預覽"| Preview["fa:fa-search-plus 檔案預覽"]:::infoNode
-    ConfirmDel --> Delete["fa:fa-trash-alt 執行刪除"]:::errorNode
+    Success --> End(["🛑 結束"]):::endNode
+    Browse --> Filter["🔍 篩選檔案"]:::processNode
+    Filter --> FileAction{"⋯ 檔案操作"}:::decisionNode
+    FileAction -->|"📥 下載"| Download["💾 下載檔案"]:::processNode
+    FileAction -->|"🗑️ 刪除"| ConfirmDel["⚠️ 確認刪除"]:::errorNode
+    FileAction -->|"👁️ 預覽"| Preview["🔎 檔案預覽"]:::infoNode
+    ConfirmDel --> Delete["🗑️ 執行刪除"]:::errorNode
     Download --> End
     Delete --> End
     Preview --> End
@@ -490,20 +490,20 @@ flowchart TD
 
 export const adminFlowChart = `
 flowchart TD
-    Start(["fa:fa-play 進入管理後台"]):::startNode --> Tab{"fa:fa-th-large 功能選擇"}:::decisionNode
-    Tab -->|"fa:fa-users 帳號管理"| UserList["fa:fa-address-book 使用者列表"]:::processNode
-    Tab -->|"fa:fa-book 課程管理"| CourseList["fa:fa-graduation-cap 課程列表"]:::processNode
-    Tab -->|"fa:fa-cog 系統設定"| Settings["fa:fa-sliders-h 系統設定"]:::processNode
-    UserList --> Search["fa:fa-search 搜尋篩選使用者"]:::processNode
-    Search --> UserAction{"fa:fa-user-cog 帳號操作"}:::decisionNode
-    UserAction -->|"fa:fa-plus 新增"| CreateForm["fa:fa-user-plus 填寫帳號資料"]:::actionNode
-    UserAction -->|"fa:fa-edit 編輯"| EditForm["fa:fa-user-edit 修改帳號資料"]:::actionNode
-    UserAction -->|"fa:fa-ban 停用"| DisableConfirm["fa:fa-exclamation-triangle 確認停用"]:::errorNode
-    CreateForm --> AssignRole["fa:fa-user-tag 指派角色權限"]:::processNode
-    AssignRole --> SaveUser["fa:fa-save 儲存帳號"]:::successNode
+    Start(["▶️ 進入管理後台"]):::startNode --> Tab{"📱 功能選擇"}:::decisionNode
+    Tab -->|"👥 帳號管理"| UserList["📇 使用者列表"]:::processNode
+    Tab -->|"📚 課程管理"| CourseList["🎓 課程列表"]:::processNode
+    Tab -->|"⚙️ 系統設定"| Settings["🎚️ 系統設定"]:::processNode
+    UserList --> Search["🔍 搜尋篩選使用者"]:::processNode
+    Search --> UserAction{"👤 帳號操作"}:::decisionNode
+    UserAction -->|"➕ 新增"| CreateForm["🆕 填寫帳號資料"]:::actionNode
+    UserAction -->|"✏️ 編輯"| EditForm["📝 修改帳號資料"]:::actionNode
+    UserAction -->|"🚫 停用"| DisableConfirm["⚠️ 確認停用"]:::errorNode
+    CreateForm --> AssignRole["🏷️ 指派角色權限"]:::processNode
+    AssignRole --> SaveUser["💾 儲存帳號"]:::successNode
     EditForm --> SaveUser
     DisableConfirm --> SaveUser
-    SaveUser --> End(["fa:fa-arrow-left 返回列表"]):::endNode
+    SaveUser --> End(["⬅️ 返回列表"]):::endNode
 
     classDef startNode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px,color:#1e3a5f,font-weight:600
     classDef processNode fill:#f0fdf4,stroke:#22c55e,stroke-width:1.5px,color:#166534
@@ -516,28 +516,28 @@ flowchart TD
 
 export const designArchitectureChart = `
 graph TB
-    subgraph Pages["fa:fa-file 頁面層 Pages"]
-        P1["fa:fa-home Index 首頁"]:::pageNode
-        P2["fa:fa-project-diagram FlowchartPage 流程圖頁"]:::pageNode
-        P3["fa:fa-exclamation-circle NotFound 404頁面"]:::pageNode
+    subgraph Pages["📄 頁面層 Pages"]
+        P1["🏠 Index 首頁"]:::pageNode
+        P2["🔀 FlowchartPage 流程圖頁"]:::pageNode
+        P3["🚫 NotFound 404頁面"]:::pageNode
     end
-    subgraph Sections["fa:fa-puzzle-piece 區塊元件 Sections"]
-        S1["fa:fa-clipboard RegistrationSection"]:::sectionNode
-        S2["fa:fa-tasks ManagementSection"]:::sectionNode
-        S3["fa:fa-upload UploadSection"]:::sectionNode
-        S4["fa:fa-cogs AdminSection"]:::sectionNode
+    subgraph Sections["🧩 區塊元件 Sections"]
+        S1["📋 RegistrationSection"]:::sectionNode
+        S2["📝 ManagementSection"]:::sectionNode
+        S3["📤 UploadSection"]:::sectionNode
+        S4["🔧 AdminSection"]:::sectionNode
     end
-    subgraph Components["fa:fa-cubes 功能元件 Components"]
-        C1["fa:fa-bars Header"]:::compNode
-        C2["fa:fa-chart-line StatsOverview"]:::compNode
-        C3["fa:fa-table DepartmentTable"]:::compNode
-        C4["fa:fa-book CourseManagement"]:::compNode
+    subgraph Components["📦 功能元件 Components"]
+        C1["☰ Header"]:::compNode
+        C2["📈 StatsOverview"]:::compNode
+        C3["📊 DepartmentTable"]:::compNode
+        C4["📚 CourseManagement"]:::compNode
     end
-    subgraph UIComponents["fa:fa-palette 基礎 UI 元件"]
-        U1["fa:fa-square Button"]:::uiNode
-        U2["fa:fa-id-card Card"]:::uiNode
-        U3["fa:fa-th Table"]:::uiNode
-        U4["fa:fa-window-maximize Dialog"]:::uiNode
+    subgraph UIComponents["🎨 基礎 UI 元件"]
+        U1["🔲 Button"]:::uiNode
+        U2["🪪 Card"]:::uiNode
+        U3["📋 Table"]:::uiNode
+        U4["🪟 Dialog"]:::uiNode
     end
     P1 --> S1
     P1 --> S2
