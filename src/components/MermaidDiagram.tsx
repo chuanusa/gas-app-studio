@@ -560,11 +560,11 @@ graph TB
 
 export const dataFlowChart = `
 sequenceDiagram
-    participant U as fa:fa-user 使用者
-    participant C as fa:fa-desktop React元件
-    participant CTX as fa:fa-database Context
-    participant API as fa:fa-server API層
-    participant DB as fa:fa-hdd 資料庫
+    participant U as 👤 使用者
+    participant C as 🖥️ React元件
+    participant CTX as 📦 Context
+    participant API as ⚙️ API層
+    participant DB as 🗄️ 資料庫
     U->>C: 操作介面
     activate C
     C->>CTX: 讀取/更新狀態
