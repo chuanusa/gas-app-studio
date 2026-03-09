@@ -8,7 +8,8 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CourseManagement } from '@/components/CourseManagement';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, UserPlus, UserX, Edit2, Shield, Users, Activity, BarChart3, Workflow, Settings } from 'lucide-react';
+import { Search, UserPlus, UserX, Edit2, Shield, Users, Activity, BarChart3, Workflow, Settings, FileText, BookOpen, Target, Palette, Lock, Zap, TestTube, Rocket, ChevronDown } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
 import {
   MermaidDiagram,
