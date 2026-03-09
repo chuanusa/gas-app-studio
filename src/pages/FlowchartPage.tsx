@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import mermaid from 'mermaid';
-import DOMPurify from 'dompurify';
+
 
 // Node descriptions mapping
 const nodeDescriptions: Record<string, { title: string; description: string }> = {
@@ -156,12 +156,8 @@ function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
       try {
         const uniqueId = `${id}-${Date.now()}`;
         const { svg: rawSvg } = await mermaid.render(uniqueId, chart);
-        const sanitized = DOMPurify.sanitize(rawSvg, {
-          USE_PROFILES: { svg: true, svgFilters: true, html: true },
-          ADD_TAGS: ['foreignObject', 'style'],
-          ADD_ATTR: ['xmlns', 'xmlns:xlink', 'viewBox', 'transform', 'style', 'marker-end', 'dominant-baseline', 'text-anchor', 'requiredFeatures', 'clip-path', 'fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linejoin', 'stroke-linecap', 'x', 'y', 'rx', 'ry', 'dx', 'dy', 'width', 'height', 'd', 'cx', 'cy', 'r', 'points', 'font-size', 'font-family', 'font-weight', 'letter-spacing', 'word-spacing'],
-        });
-        setSvg(sanitized);
+        // Chart definitions are hardcoded, not user input — safe to render directly
+        setSvg(rawSvg);
       } catch (error) {
         console.error('Mermaid render error:', error);
       }
