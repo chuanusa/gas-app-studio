@@ -6,8 +6,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CourseManagement } from '@/components/CourseManagement';
-import { Search, UserPlus, UserX, Edit2, Shield, Users, Activity, BarChart3 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, UserPlus, UserX, Edit2, Shield, Users, Activity, BarChart3, Workflow, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  MermaidDiagram,
+  designArchitectureChart,
+  adminFlowChart,
+  systemOverviewChart,
+} from '@/components/MermaidDiagram';
 
 interface MockUser {
   id: string;
