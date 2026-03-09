@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StepCard } from '@/components/ui/StepCard';
 import { Label } from '@/components/ui/label';
-import { User, Building2, Check } from 'lucide-react';
+import { User, Building2, Check, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const departments = [
@@ -24,11 +24,33 @@ const mockNames: Record<string, string[]> = {
   '南部隊': ['許九', '何十'],
 };
 
+interface ValidationErrors {
+  department?: string;
+  name?: string;
+}
+
 export function RegistrationSection() {
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
   const [selectedName, setSelectedName] = useState<string | null>(null);
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [submitted, setSubmitted] = useState(false);
 
   const names = selectedDept ? mockNames[selectedDept] ?? [] : [];
+
+  const validate = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    if (!selectedDept) newErrors.department = '請選擇部門';
+    if (!selectedName) newErrors.name = '請選擇姓名';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+    if (validate()) {
+      // submit logic
+    }
+  };
 
   return (
     <StepCard step={1} title="登錄參加課程（個人報名）">
@@ -41,6 +63,7 @@ export function RegistrationSection() {
           <Label className="flex items-center gap-1.5 text-sm font-medium mb-2">
             <Building2 className="w-3.5 h-3.5 text-primary" />
             部門
+            <span className="text-destructive">*</span>
           </Label>
           <div className="flex flex-wrap gap-1.5">
             {departments.map((dept) => {
@@ -51,6 +74,7 @@ export function RegistrationSection() {
                   onClick={() => {
                     setSelectedDept(isSelected ? null : dept);
                     setSelectedName(null);
+                    if (submitted) setErrors(prev => ({ ...prev, department: undefined }));
                   }}
                   className={cn(
                     "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
@@ -65,12 +89,19 @@ export function RegistrationSection() {
               );
             })}
           </div>
+          {submitted && errors.department && (
+            <p className="flex items-center gap-1 text-xs text-destructive mt-1.5">
+              <AlertCircle className="w-3 h-3" />
+              {errors.department}
+            </p>
+          )}
         </div>
 
         <div>
           <Label className="flex items-center gap-1.5 text-sm font-medium mb-2">
             <User className="w-3.5 h-3.5 text-primary" />
             姓名
+            <span className="text-destructive">*</span>
           </Label>
           {names.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
@@ -79,7 +110,10 @@ export function RegistrationSection() {
                 return (
                   <button
                     key={name}
-                    onClick={() => setSelectedName(isSelected ? null : name)}
+                    onClick={() => {
+                      setSelectedName(isSelected ? null : name);
+                      if (submitted) setErrors(prev => ({ ...prev, name: undefined }));
+                    }}
                     className={cn(
                       "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
                       isSelected
@@ -96,7 +130,20 @@ export function RegistrationSection() {
           ) : (
             <p className="text-xs text-muted-foreground">請先選擇部門</p>
           )}
+          {submitted && errors.name && (
+            <p className="flex items-center gap-1 text-xs text-destructive mt-1.5">
+              <AlertCircle className="w-3 h-3" />
+              {errors.name}
+            </p>
+          )}
         </div>
+
+        <button
+          onClick={handleSubmit}
+          className="btn-gradient-primary px-4 py-2 rounded-lg text-sm"
+        >
+          確認送出
+        </button>
       </div>
     </StepCard>
   );

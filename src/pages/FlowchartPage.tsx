@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText, Workflow, Users, Settings, Upload, UserCheck } from 'lucide-react';
+import { ArrowLeft, FileText, Workflow, Users, Settings, Upload, UserCheck, Download, Image } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,14 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import mermaid from 'mermaid';
-
-// Initialize mermaid
-mermaid.initialize({
-  startOnLoad: false,
-  theme: 'default',
-  securityLevel: 'loose',
-  fontFamily: 'system-ui, sans-serif',
-});
+import DOMPurify from 'dompurify';
 
 // Node descriptions mapping
 const nodeDescriptions: Record<string, { title: string; description: string }> = {
@@ -106,27 +99,27 @@ const nodeDescriptions: Record<string, { title: string; description: string }> =
   'SaveUser': { title: '儲存帳號', description: '儲存帳號資料變更，系統自動記錄修改歷程。' },
 
   // Design Architecture
-  'P1': { title: 'Index 頁面', description: '系統主頁面，整合所有功能區塊（報名、管理、上傳、管理員）。' },
+  'P1': { title: 'Index 頁面', description: '系統主頁面，整合所有功能區塊。' },
   'P2': { title: 'FlowchartPage 頁面', description: '流程圖展示頁面，使用 Mermaid 繪製互動式流程圖。' },
-  'P3': { title: 'NotFound 頁面', description: '404 錯誤頁面，當使用者存取不存在的路由時顯示。' },
-  'S1': { title: 'RegistrationSection', description: '員工報名區塊，包含課程清單與報名表單功能。' },
-  'S2': { title: 'ManagementSection', description: '主管管理區塊，包含統計資料與審核功能。' },
-  'S3': { title: 'UploadSection', description: '檔案上傳區塊，提供拖曳上傳與檔案管理介面。' },
-  'S4': { title: 'AdminSection', description: '系統管理區塊，提供帳號與課程的管理功能。' },
-  'C1': { title: 'Header 元件', description: '系統頂部導覽列，包含角色切換、主題切換與導航按鈕。' },
-  'C2': { title: 'StatsOverview 元件', description: '統計概覽元件，顯示報名數據的視覺化摘要。' },
-  'C3': { title: 'DepartmentTable 元件', description: '部門資料表格，展示各部門的報名統計資訊。' },
-  'C4': { title: 'CourseManagement 元件', description: '課程管理元件，提供課程的 CRUD 操作介面。' },
-  'U1': { title: 'Button 元件', description: 'UI 按鈕元件，支援多種變體（primary、secondary、ghost 等）。' },
-  'U2': { title: 'Card 元件', description: 'UI 卡片元件，用於包裝內容區塊，提供統一的視覺樣式。' },
-  'U3': { title: 'Table 元件', description: 'UI 表格元件，用於資料的結構化展示。' },
-  'U4': { title: 'Dialog 元件', description: 'UI 對話框元件，用於確認操作或顯示詳細資訊。' },
+  'P3': { title: 'NotFound 頁面', description: '404 錯誤頁面。' },
+  'S1': { title: 'RegistrationSection', description: '員工報名區塊。' },
+  'S2': { title: 'ManagementSection', description: '主管管理區塊。' },
+  'S3': { title: 'UploadSection', description: '檔案上傳區塊。' },
+  'S4': { title: 'AdminSection', description: '系統管理區塊。' },
+  'C1': { title: 'Header 元件', description: '系統頂部導覽列。' },
+  'C2': { title: 'StatsOverview 元件', description: '統計概覽元件。' },
+  'C3': { title: 'DepartmentTable 元件', description: '部門資料表格。' },
+  'C4': { title: 'CourseManagement 元件', description: '課程管理元件。' },
+  'U1': { title: 'Button 元件', description: 'UI 按鈕元件。' },
+  'U2': { title: 'Card 元件', description: 'UI 卡片元件。' },
+  'U3': { title: 'Table 元件', description: 'UI 表格元件。' },
+  'U4': { title: 'Dialog 元件', description: 'UI 對話框元件。' },
 
   // Data Flow
-  'U': { title: '使用者', description: '系統的終端使用者，透過瀏覽器與系統互動。' },
-  'CTX': { title: 'Context 狀態管理', description: 'React Context 提供全域狀態管理，包含角色資訊（RoleContext）與主題設定（ThemeColorContext）。' },
-  'API': { title: 'API 層', description: 'API 請求層，負責與後端伺服器進行資料交換（未來將整合 RESTful API）。' },
-  'DB': { title: '資料庫', description: '後端資料庫，儲存所有業務資料包含使用者、課程、報名記錄等。' },
+  'U': { title: '使用者', description: '系統的終端使用者。' },
+  'CTX': { title: 'Context 狀態管理', description: 'React Context 全域狀態管理。' },
+  'API': { title: 'API 層', description: 'API 請求層。' },
+  'DB': { title: '資料庫', description: '後端資料庫。' },
 };
 
 interface MermaidDiagramProps {
@@ -141,10 +134,33 @@ function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: isDark ? 'dark' : 'default',
+      securityLevel: 'loose',
+      fontFamily: 'Noto Sans TC, system-ui, sans-serif',
+      themeVariables: isDark ? {
+        primaryColor: '#1a7a8a',
+        primaryTextColor: '#e5e7eb',
+        primaryBorderColor: '#2d8a9a',
+        lineColor: '#6b7280',
+        secondaryColor: '#1e293b',
+        tertiaryColor: '#0f172a',
+        noteBkgColor: '#1e293b',
+        noteTextColor: '#e5e7eb',
+      } : undefined,
+    });
+
     const renderChart = async () => {
       try {
-        const { svg } = await mermaid.render(id, chart);
-        setSvg(svg);
+        const uniqueId = `${id}-${Date.now()}`;
+        const { svg: rawSvg } = await mermaid.render(uniqueId, chart);
+        const sanitized = DOMPurify.sanitize(rawSvg, {
+          ADD_TAGS: ['foreignObject'],
+          ADD_ATTR: ['xmlns', 'xmlns:xlink', 'viewBox', 'transform', 'style', 'marker-end', 'dominant-baseline', 'text-anchor'],
+        });
+        setSvg(sanitized);
       } catch (error) {
         console.error('Mermaid render error:', error);
       }
@@ -154,42 +170,76 @@ function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    // Walk up to find the closest node group
     const nodeEl = target.closest('.node, .actor, [id*="flowchart-"], [id*="node"]');
     if (!nodeEl) return;
 
-    // Try to extract the node ID from the element
     const elId = nodeEl.id || '';
-    // Mermaid generates IDs like "flowchart-A-123" or just contains the key
     const match = elId.match(/flowchart-(\w+)-\d+/) || elId.match(/(\w+)/);
-    
-    // Also try text content as fallback
     const textEl = nodeEl.querySelector('.nodeLabel, .label, text, span');
     const textContent = textEl?.textContent?.trim() || '';
 
-    // Search by ID first, then by matching text content
     let nodeInfo: { title: string; description: string } | null = null;
-    
     if (match) {
       const nodeKey = match[1];
       if (nodeDescriptions[nodeKey]) {
         nodeInfo = nodeDescriptions[nodeKey];
       }
     }
-
-    // Fallback: search by text content
     if (!nodeInfo && textContent) {
       const found = Object.values(nodeDescriptions).find(
         (desc) => desc.title === textContent || textContent.includes(desc.title)
       );
       if (found) nodeInfo = found;
     }
-
     if (nodeInfo) {
       setSelectedNode(nodeInfo);
       setDialogOpen(true);
     }
   }, []);
+
+  const handleExportSVG = useCallback(() => {
+    if (!svg) return;
+    const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${id}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [svg, id]);
+
+  const handleExportPNG = useCallback(() => {
+    if (!containerRef.current) return;
+    const svgEl = containerRef.current.querySelector('svg');
+    if (!svgEl) return;
+
+    const canvas = document.createElement('canvas');
+    const rect = svgEl.getBoundingClientRect();
+    const scale = 2;
+    canvas.width = rect.width * scale;
+    canvas.height = rect.height * scale;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.scale(scale, scale);
+
+    const data = new XMLSerializer().serializeToString(svgEl);
+    const img = new window.Image();
+    const svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, rect.width, rect.height);
+      URL.revokeObjectURL(url);
+      const pngUrl = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = pngUrl;
+      a.download = `${id}.png`;
+      a.click();
+    };
+    img.src = url;
+  }, [id]);
 
   return (
     <>
@@ -199,9 +249,21 @@ function MermaidDiagram({ chart, id }: MermaidDiagramProps) {
         dangerouslySetInnerHTML={{ __html: svg }}
         onClick={handleClick}
       />
-      <p className="text-xs text-muted-foreground mt-2 text-center">
-        💡 點擊流程圖中的節點可查看詳細說明
-      </p>
+      <div className="flex items-center justify-between mt-2">
+        <p className="text-xs text-muted-foreground">
+          💡 點擊節點查看詳細說明
+        </p>
+        <div className="flex gap-1.5">
+          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExportSVG}>
+            <Download className="w-3 h-3" />
+            SVG
+          </Button>
+          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExportPNG}>
+            <Image className="w-3 h-3" />
+            PNG
+          </Button>
+        </div>
+      </div>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -336,28 +398,24 @@ graph TB
         P2[FlowchartPage]
         P3[NotFound]
     end
-    
     subgraph Sections
         S1[RegistrationSection]
         S2[ManagementSection]
         S3[UploadSection]
         S4[AdminSection]
     end
-    
     subgraph Components
         C1[Header]
         C2[StatsOverview]
         C3[DepartmentTable]
         C4[CourseManagement]
     end
-    
     subgraph UIComponents
         U1[Button]
         U2[Card]
         U3[Table]
         U4[Dialog]
     end
-    
     P1 --> S1
     P1 --> S2
     P1 --> S3
@@ -379,7 +437,6 @@ sequenceDiagram
     participant CTX as Context
     participant API as API層
     participant DB as 資料庫
-    
     U->>C: 操作介面
     C->>CTX: 讀取/更新狀態
     CTX-->>C: 返回狀態
@@ -394,7 +451,6 @@ sequenceDiagram
 export default function FlowchartPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      {/* Header */}
       <header className="sticky top-0 z-30 backdrop-blur-md bg-background/80 border-b border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
@@ -415,7 +471,6 @@ export default function FlowchartPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto gap-2 bg-transparent p-0">
@@ -437,7 +492,6 @@ export default function FlowchartPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* 系統總覽 */}
           <TabsContent value="overview" className="space-y-6">
             <Card>
               <CardHeader>
@@ -445,9 +499,7 @@ export default function FlowchartPage() {
                   <FileText className="w-5 h-5" />
                   系統整體流程
                 </CardTitle>
-                <CardDescription>
-                  展示不同角色進入系統後的操作路徑與最終結果（點擊節點查看說明）
-                </CardDescription>
+                <CardDescription>展示不同角色進入系統後的操作路徑與最終結果</CardDescription>
               </CardHeader>
               <CardContent>
                 <MermaidDiagram chart={systemOverviewChart} id="system-overview" />
@@ -455,104 +507,56 @@ export default function FlowchartPage() {
             </Card>
           </TabsContent>
 
-          {/* 操作流程 */}
           <TabsContent value="operations" className="space-y-6">
             <div className="grid gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    員工報名流程
-                  </CardTitle>
-                  <CardDescription>
-                    員工查看課程、填寫報名表單、上傳證書的完整流程
-                  </CardDescription>
+                  <CardTitle className="flex items-center gap-2"><Users className="w-5 h-5" />員工報名流程</CardTitle>
+                  <CardDescription>員工查看課程、填寫報名表單、上傳證書的完整流程</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <MermaidDiagram chart={employeeFlowChart} id="employee-flow" />
-                </CardContent>
+                <CardContent><MermaidDiagram chart={employeeFlowChart} id="employee-flow" /></CardContent>
               </Card>
-
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserCheck className="w-5 h-5" />
-                    主管審核流程
-                  </CardTitle>
-                  <CardDescription>
-                    主管查看部門統計、審核報名、匯出資料的操作流程
-                  </CardDescription>
+                  <CardTitle className="flex items-center gap-2"><UserCheck className="w-5 h-5" />主管審核流程</CardTitle>
+                  <CardDescription>主管查看部門統計、審核報名、匯出資料的操作流程</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <MermaidDiagram chart={managerFlowChart} id="manager-flow" />
-                </CardContent>
+                <CardContent><MermaidDiagram chart={managerFlowChart} id="manager-flow" /></CardContent>
               </Card>
-
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Upload className="w-5 h-5" />
-                    上傳管理員流程
-                  </CardTitle>
-                  <CardDescription>
-                    檔案上傳、分類管理、下載與刪除的完整流程
-                  </CardDescription>
+                  <CardTitle className="flex items-center gap-2"><Upload className="w-5 h-5" />上傳管理員流程</CardTitle>
+                  <CardDescription>檔案上傳、分類管理、下載與刪除的完整流程</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <MermaidDiagram chart={uploadAdminFlowChart} id="upload-admin-flow" />
-                </CardContent>
+                <CardContent><MermaidDiagram chart={uploadAdminFlowChart} id="upload-admin-flow" /></CardContent>
               </Card>
-
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="w-5 h-5" />
-                    系統管理員流程
-                  </CardTitle>
-                  <CardDescription>
-                    帳號管理、課程設定、系統配置的操作流程
-                  </CardDescription>
+                  <CardTitle className="flex items-center gap-2"><Settings className="w-5 h-5" />系統管理員流程</CardTitle>
+                  <CardDescription>帳號管理、課程設定、系統配置的操作流程</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <MermaidDiagram chart={adminFlowChart} id="admin-flow" />
-                </CardContent>
+                <CardContent><MermaidDiagram chart={adminFlowChart} id="admin-flow" /></CardContent>
               </Card>
             </div>
           </TabsContent>
 
-          {/* 設計架構 */}
           <TabsContent value="design" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5" />
-                  元件架構圖
-                </CardTitle>
-                <CardDescription>
-                  展示系統的元件層級與依賴關係
-                </CardDescription>
+                <CardTitle className="flex items-center gap-2"><Settings className="w-5 h-5" />元件架構圖</CardTitle>
+                <CardDescription>展示系統的元件層級與依賴關係</CardDescription>
               </CardHeader>
-              <CardContent>
-                <MermaidDiagram chart={designArchitectureChart} id="design-arch" />
-              </CardContent>
+              <CardContent><MermaidDiagram chart={designArchitectureChart} id="design-arch" /></CardContent>
             </Card>
           </TabsContent>
 
-          {/* 資料流程 */}
           <TabsContent value="dataflow" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Workflow className="w-5 h-5" />
-                  資料流程圖
-                </CardTitle>
-                <CardDescription>
-                  展示使用者操作到資料庫的完整資料流動過程
-                </CardDescription>
+                <CardTitle className="flex items-center gap-2"><Workflow className="w-5 h-5" />資料流程圖</CardTitle>
+                <CardDescription>展示使用者操作到資料庫的完整資料流動過程</CardDescription>
               </CardHeader>
-              <CardContent>
-                <MermaidDiagram chart={dataFlowChart} id="data-flow" />
-              </CardContent>
+              <CardContent><MermaidDiagram chart={dataFlowChart} id="data-flow" /></CardContent>
             </Card>
           </TabsContent>
         </Tabs>
